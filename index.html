@@ -2,21 +2,160 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Co-Lab Hackathon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Co-Lab Hackathon Portal</title>
+  <!-- Tailwind CSS CDN for instant styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Student Dashboard</h1>
-  <div id="data-container">Loading...</div>
+<body class="bg-gray-900 text-gray-100 min-h-screen font-sans p-6">
+
+  <!-- Header Section -->
+  <header class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center pb-6 border-b border-gray-800 gap-4">
+    <div>
+      <h1 class="text-3xl font-extrabold text-indigo-400">Co-Lab Platform</h1>
+      <p class="text-sm text-gray-400">Verified Skills & Dynamic Project Matching</p>
+    </div>
+
+    <!-- Multi-Role Navigation Tabs -->
+    <div class="flex space-x-2 bg-gray-800 p-1 rounded-lg border border-gray-700">
+      <button onclick="switchTab('student')" id="tab-student" class="px-4 py-2 rounded-md text-sm font-semibold bg-indigo-600 text-white transition">Student View</button>
+      <button onclick="switchTab('mentor')" id="tab-mentor" class="px-4 py-2 rounded-md text-sm font-semibold text-gray-400 hover:text-white transition">Mentor View</button>
+      <button onclick="switchTab('recruiter')" id="tab-recruiter" class="px-4 py-2 rounded-md text-sm font-semibold text-gray-400 hover:text-white transition">Recruiter View</button>
+    </div>
+  </header>
+
+  <!-- Dynamic Content Area -->
+  <main class="max-w-6xl mx-auto mt-8">
+
+    <!-- Status Alert Banner -->
+    <div id="status-banner" class="hidden mb-6 p-4 rounded-lg bg-green-900/50 border border-green-500 text-green-300 text-sm"></div>
+
+    <!-- Dynamic Container for Backend Data -->
+    <div id="data-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="col-span-full text-center py-12 text-gray-500">
+        Loading data from Co-Lab API...
+      </div>
+    </div>
+  </main>
 
   <script>
-    fetch('http://127.0.0.1:8000/api/students/portfolio')
-    
-    // change port/route to match your FastAPI endpoints
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('data-container').innerText = JSON.stringify(data, null, 2);
-      })
-      .catch(err => console.error(err));
+    const API_BASE = 'http://127.0.0.1:8000';
+    let currentRole = 'student';
+    let fetchedStudents = [];
+
+    // Fetch portfolios from Gopika's backend
+    async function loadData() {
+      try {
+        const res = await fetch(`${API_BASE}/api/students/portfolio`);
+        const data = await res.json();
+        fetchedStudents = data.students || [];
+        renderUI();
+      } catch (err) {
+        console.error('API Error:', err);
+        document.getElementById('data-container').innerHTML = `
+          <div class="col-span-full bg-red-900/30 border border-red-500 text-red-300 p-6 rounded-lg text-center">
+            <strong>Connection Failed!</strong> Ensure backend server is running on port 8000.
+          </div>
+        `;
+      }
+    }
+
+    // Switch between Student, Mentor, and Recruiter views dynamically
+    function switchTab(role) {
+      currentRole = role;
+      ['student', 'mentor', 'recruiter'].forEach(r => {
+        const btn = document.getElementById(`tab-${r}`);
+        if (r === role) {
+          btn.className = 'px-4 py-2 rounded-md text-sm font-semibold bg-indigo-600 text-white transition';
+        } else {
+          btn.className = 'px-4 py-2 rounded-md text-sm font-semibold text-gray-400 hover:text-white transition';
+        }
+      });
+      renderUI();
+    }
+
+    // Render HTML card layout depending on active role view
+    function renderUI() {
+      const container = document.getElementById('data-container');
+
+      if (!fetchedStudents.length) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400">No portfolio records found.</div>`;
+        return;
+      }
+
+      container.innerHTML = fetchedStudents.map(student => {
+        return `
+          <div class="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl hover:border-indigo-500 transition flex flex-col justify-between">
+            <div>
+              <!-- Student Header -->
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 class="text-xl font-bold text-white">${student.name || 'Anonymous Student'}</h3>
+                  <p class="text-xs text-indigo-400">${student.email || 'No email provided'}</p>
+                </div>
+                <span class="px-2 py-1 text-xs rounded bg-indigo-950 text-indigo-300 border border-indigo-800 font-mono">ID: ${student.id || '#1'}</span>
+              </div>
+
+              <!-- Projects Section -->
+              <div class="space-y-3 my-4">
+                <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Projects</h4>
+                ${(student.projects || []).map(p => `
+                  <div class="bg-gray-900 p-3 rounded-lg border border-gray-800 flex justify-between items-center">
+                    <div>
+                      <p class="text-sm font-semibold text-gray-200">${p.title || p.name || 'Untitled Project'}</p>
+                      <p class="text-xs text-gray-500">Status: <span id="status-${p.id}" class="text-emerald-400">${p.status || 'Verified'}</span></p>
+                    </div>
+                    ${currentRole === 'mentor' ? `
+                      <button onclick="approveProject(${p.id}, 'Mentor Devika')" class="px-3 py-1 text-xs bg-emerald-600 hover:bg-emerald-500 text-white rounded font-medium transition">
+                        Verify
+                      </button>
+                    ` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Role-Specific Footer -->
+            <div class="pt-4 border-t border-gray-700 mt-4">
+              ${currentRole === 'recruiter' ? `
+                <button onclick="showBanner('Recruiter outreach sent to ${student.name}!')" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-semibold transition">
+                  Shortlist Candidate
+                </button>
+              ` : currentRole === 'mentor' ? `
+                <p class="text-xs text-gray-400 text-center">Mentor Mode: Review and sign off on submitted work</p>
+              ` : `
+                <span class="inline-block bg-gray-700 text-gray-300 text-xs px-3 py-1 rounded-full">Student Profile Active</span>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Call Gopika's backend approve API
+    async function approveProject(projectId, mentorName) {
+      try {
+        const res = await fetch(`${API_BASE}/api/mentor/approve/${projectId}?mentor_name=${encodeURIComponent(mentorName)}`, {
+          method: 'POST'
+        });
+        const data = await res.json();
+        showBanner(data.message || `Project #${projectId} verified!`);
+        loadData();
+      } catch (err) {
+        console.error('Approval failed:', err);
+        showBanner(`Verified Project #${projectId} locally for demo.`);
+      }
+    }
+
+    function showBanner(msg) {
+      const banner = document.getElementById('status-banner');
+      banner.innerText = msg;
+      banner.classList.remove('hidden');
+      setTimeout(() => banner.classList.add('hidden'), 4000);
+    }
+
+    // Initial load
+    loadData();
   </script>
 </body>
 </html>

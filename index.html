@@ -9,7 +9,9 @@
   <div id="data-container">Loading...</div>
 
   <script>
-    fetch('http://127.0.0.1:8000/students') // change port/route to match your FastAPI endpoints
+    fetch('http://127.0.0.1:8000/api/students/portfolio')
+    
+    // change port/route to match your FastAPI endpoints
       .then(res => res.json())
       .then(data => {
         document.getElementById('data-container').innerText = JSON.stringify(data, null, 2);

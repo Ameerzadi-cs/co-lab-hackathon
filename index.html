@@ -1,61 +1,103 @@
-<script>
-  const API = 'http://127.0.0.1:8000';
-  const show = (data) =>
-    document.getElementById('output').innerText =
-      JSON.stringify(data, null, 2);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Co-Lab Demo</title>
+</head>
 
-  // 1. GET /api/assessment/questions
-  const getQuiz = () =>
-    fetch(`${API}/api/assessment/questions?skill=Python`)
-      .then(r => r.json())
-      .then(show);
+<body style="font-family: sans-serif; padding: 20px;">
 
-  // 2. POST /api/assessment/submit
-  const submitQuiz = () =>
-    fetch(`${API}/api/assessment/submit`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        student_id: 4,
-        skill: 'Python',
-        answers: {
-          "1": "wrong",
-          "2": "wrong",
-          "3": "3",
-          "4": "wrong",
-          "5": "wrong"
+  <h2>Co-Lab Demo</h2>
+
+  <button onclick="getQuiz()">1. Load Quiz</button> |
+  <button onclick="submitQuiz()">2. Submit Quiz</button> |
+  <button onclick="submitProject()">3. Submit Project</button> |
+  <button onclick="approve()">4. Approve #1</button> |
+  <button onclick="search()">5. Search Python</button>
+
+  <pre id="output"
+       style="background: #f0f0f0; padding: 10px; margin-top: 15px;"></pre>
+
+  <script>
+    const API = 'http://127.0.0.1:8000';
+
+    const show = (data) => {
+      document.getElementById('output').innerText =
+        JSON.stringify(data, null, 2);
+    };
+
+    // 1. Load Python Assessment
+    const getQuiz = () =>
+      fetch(`${API}/api/assessment/questions?skill=Python`)
+        .then(response => response.json())
+        .then(show)
+        .catch(error => show({ error: error.toString() }));
+
+
+    // 2. Submit Python Assessment
+    const submitQuiz = () =>
+      fetch(`${API}/api/assessment/submit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          student_id: 4,
+          skill: 'Python',
+          answers: {
+            "1": "wrong",
+            "2": "wrong",
+            "3": "3",
+            "4": "wrong",
+            "5": "wrong"
+          }
+        })
+      })
+        .then(response => response.json())
+        .then(show)
+        .catch(error => show({ error: error.toString() }));
+
+
+    // 3. Submit Student Project
+    const submitProject = () =>
+      fetch(`${API}/api/student/project`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          student_id: 4,
+          title: 'Python Student Management System',
+          description: 'A Python application for managing student records.',
+          github_url: 'https://github.com/colab-demo/python-student-management'
+        })
+      })
+        .then(response => response.json())
+        .then(show)
+        .catch(error => show({ error: error.toString() }));
+
+
+    // 4. Mentor Approves Project
+    const approve = () =>
+      fetch(
+        `${API}/api/mentor/approve/302?mentor_name=Dr.%20Alan%20Thomas`,
+        {
+          method: 'POST'
         }
-      })
-    })
-      .then(r => r.json())
-      .then(show);
+      )
+        .then(response => response.json())
+        .then(show)
+        .catch(error => show({ error: error.toString() }));
 
-  // 3. POST /api/student/project
-  const submitProject = () =>
-    fetch(`${API}/api/student/project`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        student_id: 4,
-        title: 'Python Student Management System',
-        description: 'A Python application for managing student records.',
-        github_url: 'https://github.com/colab-demo/python-student-management'
-      })
-    })
-      .then(r => r.json())
-      .then(show);
 
-  // 4. POST /api/mentor/approve/{project_id}
-  const approve = () =>
-    fetch(`${API}/api/mentor/approve/102?mentor_name=Dr.%20Alan%20Thomas`, {
-      method: 'POST'
-    })
-      .then(r => r.json())
-      .then(show);
+    // 5. Recruiter Searches for Python
+    const search = () =>
+      fetch(`${API}/api/recruiter/search?skill=Python`)
+        .then(response => response.json())
+        .then(show)
+        .catch(error => show({ error: error.toString() }));
+  </script>
 
-  // 5. GET /api/recruiter/search?skill=Python
-  const search = () =>
-    fetch(`${API}/api/recruiter/search?skill=Python`)
-      .then(r => r.json())
-      .then(show);
-</script>
+</body>
+</html>

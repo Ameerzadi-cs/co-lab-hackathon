@@ -1,305 +1,2197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Co-Lab | Verified Skill & Project Matching</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-950 text-gray-100 min-h-screen font-sans flex flex-col">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Co-Lab | Verified Skills & Dynamic Project Matching</title>
 
-  <!-- Top Navigation Bar -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: #030712;
+    }
+
+    .option-card {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .option-card:hover {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .option-card.selected {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans">
+
+  <!-- HEADER -->
   <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-xl text-white shadow-lg">C</div>
+
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-xl">
+          C
+        </div>
+
         <div>
-          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            Co-Lab <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Platform</span>
+          <h1 class="text-xl font-bold text-white">
+            Co-Lab
+            <span class="text-xs px-2 py-1 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+              Platform
+            </span>
           </h1>
-          <p class="text-xs text-gray-400">Verified Skills & Dynamic Project Matching</p>
+
+          <p class="text-xs text-gray-400">
+            Verified Skills & Dynamic Project Matching
+          </p>
         </div>
       </div>
 
-      <!-- View Switcher -->
-      <div class="flex bg-gray-950 p-1.5 rounded-xl border border-gray-800">
-        <button onclick="switchTab('student')" id="tab-student" class="px-5 py-2 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white shadow-md">Student View</button>
-        <button onclick="switchTab('mentor')" id="tab-mentor" class="px-5 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Mentor View</button>
-        <button onclick="switchTab('recruiter')" id="tab-recruiter" class="px-5 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Recruiter View</button>
+      <!-- VIEW SWITCHER -->
+      <div class="flex bg-gray-950 p-1 rounded-xl border border-gray-800">
+        <button
+          onclick="switchTab('student')"
+          id="tab-student"
+          class="px-5 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white">
+          Student View
+        </button>
+
+        <button
+          onclick="switchTab('mentor')"
+          id="tab-mentor"
+          class="px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white">
+          Mentor View
+        </button>
+
+        <button
+          onclick="switchTab('recruiter')"
+          id="tab-recruiter"
+          class="px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white">
+          Recruiter View
+        </button>
       </div>
+
     </div>
   </header>
 
-  <!-- Notification Banner -->
-  <div id="toast" class="hidden max-w-7xl mx-auto px-6 mt-4">
-    <div id="toast-content" class="p-4 rounded-xl text-xs font-mono border flex items-center justify-between"></div>
+
+  <!-- NOTIFICATION -->
+  <div id="notification" class="hidden max-w-7xl mx-auto px-6 pt-5">
+    <div id="notification-content" class="rounded-xl px-5 py-4 border text-sm">
+    </div>
   </div>
 
-  <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full">
 
-    <!-- 1. STUDENT VIEW -->
-    <div id="view-student" class="space-y-8">
-      <div class="bg-gradient-to-r from-indigo-900/40 via-gray-900 to-purple-900/20 border border-indigo-500/20 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 mb-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Profile Active: Student #4
-          </span>
-          <h2 class="text-2xl font-bold text-white">Skill Endorsement Portal</h2>
-          <p class="text-xs text-gray-400 mt-1">Complete assessments and submit projects to receive verified mentor badges.</p>
-        </div>
-        <div class="flex gap-2">
-          <span class="px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-lg text-xs text-gray-300 font-semibold">Python Assessment: Pending</span>
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- ===================================================== -->
+    <!-- STUDENT VIEW -->
+    <!-- ===================================================== -->
+
+    <section id="view-student" class="space-y-8">
+
+      <!-- HERO -->
+      <div class="bg-gradient-to-r from-indigo-950 via-gray-900 to-purple-950 border border-indigo-500/30 rounded-3xl p-8">
+
+        <div class="flex flex-col md:flex-row justify-between gap-6">
+
+          <div>
+            <span class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Profile Active: Ananya Rao (Student #4)
+            </span>
+
+            <h2 class="text-4xl font-black text-white mt-5">
+              Your Skill Journey
+            </h2>
+
+            <p class="text-gray-400 mt-2">
+              Assess → Improve → Build → Get Verified → Become Industry Ready
+            </p>
+
+            <p id="motivation-message" class="text-indigo-300 mt-4 font-semibold">
+              🚀 Start your journey by completing the Python assessment.
+            </p>
+          </div>
+
+          <div class="text-center bg-gray-950/60 border border-gray-800 rounded-2xl p-6 min-w-[180px]">
+            <p class="text-xs text-gray-500 uppercase tracking-wider">
+              Industry Readiness
+            </p>
+
+            <p id="hero-readiness" class="text-5xl font-black text-indigo-400 mt-2">
+              0%
+            </p>
+
+            <p class="text-xs text-gray-500 mt-2">
+              Keep progressing!
+            </p>
+          </div>
+
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Skill Assessment UI -->
-        <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 flex flex-col justify-between shadow-xl">
-          <div>
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                <span class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">📜</span> Python Assessment
-              </h3>
-              <button onclick="getQuiz()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold transition">1. Fetch Questions</button>
-            </div>
-            
-            <div id="quiz-container" class="bg-gray-950 rounded-xl p-4 border border-gray-800 text-xs text-gray-400 min-h-[160px] flex items-center justify-center text-center">
-              Click "Fetch Questions" to load the Python assessment modules from the backend.
-            </div>
-          </div>
 
-          <button onclick="submitQuiz()" class="w-full mt-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-xs transition shadow-lg shadow-emerald-600/20">
-            2. Submit Assessment Answers
-          </button>
+      <!-- JOURNEY CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+        <div id="card-assessment" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+          <div class="text-3xl">📝</div>
+          <h3 class="font-bold mt-3">Assessment</h3>
+          <p id="status-assessment" class="text-xs text-gray-500 mt-2">
+            Not Started
+          </p>
         </div>
 
-        <!-- Project Submission UI -->
-        <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 flex flex-col justify-between shadow-xl">
+        <div id="card-gap" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+          <div class="text-3xl">🧭</div>
+          <h3 class="font-bold mt-3">Skill Gap</h3>
+          <p id="status-gap" class="text-xs text-gray-500 mt-2">
+            Pending
+          </p>
+        </div>
+
+        <div id="card-learning" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+          <div class="text-3xl">📚</div>
+          <h3 class="font-bold mt-3">Learning</h3>
+          <p id="status-learning" class="text-xs text-gray-500 mt-2">
+            0% Complete
+          </p>
+        </div>
+
+        <div id="card-project" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+          <div class="text-3xl">🚀</div>
+          <h3 class="font-bold mt-3">Project</h3>
+          <p id="status-project" class="text-xs text-gray-500 mt-2">
+            Pending
+          </p>
+        </div>
+
+        <div id="card-verification" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+          <div class="text-3xl">🏆</div>
+          <h3 class="font-bold mt-3">Verification</h3>
+          <p id="status-verification" class="text-xs text-gray-500 mt-2">
+            Pending
+          </p>
+        </div>
+
+      </div>
+
+
+      <!-- READINESS BAR -->
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+        <div class="flex justify-between items-center">
           <div>
-            <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
-              <span class="p-2 bg-purple-500/10 rounded-lg text-purple-400">🚀</span> Submit Capstone Project
+            <h3 class="font-bold text-lg">
+              🚀 Industry Readiness
             </h3>
-            
-            <div class="space-y-3">
-              <div>
-                <label class="text-xs font-semibold text-gray-400 block mb-1">Project Title</label>
-                <input type="text" id="proj-title" value="Python Student Management System" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-indigo-500" />
-              </div>
 
-              <div>
-                <label class="text-xs font-semibold text-gray-400 block mb-1">Description</label>
-                <textarea id="proj-desc" rows="2" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-indigo-500">A Python application for managing student records.</textarea>
-              </div>
-
-              <div>
-                <label class="text-xs font-semibold text-gray-400 block mb-1">GitHub Repository Link</label>
-                <input type="text" id="proj-github" value="https://github.com/colab-demo/python-student-management" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-indigo-500" />
-              </div>
-            </div>
+            <p id="readiness-text" class="text-xs text-gray-400 mt-1">
+              Complete your assessment, learning modules, project and mentor verification.
+            </p>
           </div>
 
-          <button onclick="submitProject()" class="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-xs transition shadow-lg shadow-indigo-600/20">
-            3. Submit Project for Mentor Review
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2. MENTOR VIEW -->
-    <div id="view-mentor" class="hidden space-y-8">
-      <div class="bg-gradient-to-r from-emerald-900/30 via-gray-900 to-gray-900 border border-emerald-500/20 rounded-2xl p-6">
-        <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Faculty Board</span>
-        <h2 class="text-2xl font-bold text-white mt-2">Mentor Review Dashboard</h2>
-        <p class="text-xs text-gray-400 mt-1">Review student repository submissions and sign off on skill verifications.</p>
-      </div>
-
-      <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 shadow-xl max-w-2xl">
-        <div class="flex items-start justify-between border-b border-gray-800 pb-4 mb-4">
-          <div>
-            <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded">Project #102</span>
-            <h3 class="text-lg font-bold text-white mt-1">Python Student Management System</h3>
-            <p class="text-xs text-gray-400 mt-1">Submitted by: <span class="text-gray-200 font-medium">Student #4</span></p>
-          </div>
-          <span id="approval-status-badge" class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full text-xs font-semibold">
-            Pending Endorsement
+          <span id="readiness-number" class="text-2xl font-black text-indigo-400">
+            0%
           </span>
         </div>
 
-        <p class="text-xs text-gray-300 mb-4 bg-gray-950 p-3 rounded-lg border border-gray-800">
-          "A Python application for managing student records featuring clean architecture, standard CRUD operations, and isolated module structures."
+        <div class="w-full bg-gray-800 rounded-full h-3 mt-5 overflow-hidden">
+          <div
+            id="readiness-bar"
+            class="progress-bar bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full"
+            style="width: 0%">
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- TWO COLUMN -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        <!-- ASSESSMENT -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+          <div class="flex justify-between items-center mb-5">
+
+            <div>
+              <h3 class="text-xl font-bold flex items-center gap-2">
+                📜 Python Assessment
+              </h3>
+
+              <p class="text-xs text-gray-500 mt-1">
+                Test your Python fundamentals.
+              </p>
+            </div>
+
+            <button
+              onclick="startAssessment()"
+              id="start-assessment-btn"
+              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold">
+              Start Assessment
+            </button>
+
+          </div>
+
+
+          <!-- QUIZ -->
+          <div id="quiz-container">
+
+            <div class="border border-dashed border-gray-700 rounded-xl p-8 text-center">
+
+              <div class="text-4xl mb-3">
+                🧠
+              </div>
+
+              <h4 class="font-bold text-white">
+                Ready to test your skills?
+              </h4>
+
+              <p class="text-xs text-gray-500 mt-2">
+                Click "Start Assessment" to begin your 5-question Python assessment.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- SUBMIT -->
+          <button
+            onclick="submitQuiz()"
+            id="submit-quiz-btn"
+            disabled
+            class="w-full mt-6 py-3 bg-emerald-700/50 text-gray-400 font-bold rounded-xl text-sm cursor-not-allowed">
+            Submit Assessment
+          </button>
+
+
+          <!-- RESULT -->
+          <div id="assessment-result" class="hidden mt-5">
+          </div>
+
+        </div>
+
+
+        <!-- PROJECT -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+          <div class="mb-5">
+            <h3 class="text-xl font-bold">
+              🚀 Capstone Project
+            </h3>
+
+            <p class="text-xs text-gray-500 mt-1">
+              Build practical evidence of your Python skills.
+            </p>
+          </div>
+
+
+          <div class="space-y-4">
+
+            <div>
+              <label class="text-xs font-semibold text-gray-400">
+                Project Title
+              </label>
+
+              <input
+                id="proj-title"
+                type="text"
+                value="Python Student Management System"
+                class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+
+
+            <div>
+              <label class="text-xs font-semibold text-gray-400">
+                Description
+              </label>
+
+              <textarea
+                id="proj-desc"
+                rows="4"
+                class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">A Python application for managing student records using CRUD operations and file handling.</textarea>
+            </div>
+
+
+            <div>
+              <label class="text-xs font-semibold text-gray-400">
+                GitHub Repository
+              </label>
+
+              <input
+                id="proj-github"
+                type="text"
+                value="https://github.com/colab-demo/python-student-management"
+                class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+
+          </div>
+
+
+          <button
+            onclick="submitProject()"
+            class="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-sm">
+            Submit Project for Mentor Review
+          </button>
+
+
+          <div id="project-result" class="hidden mt-5">
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- LEARNING ROADMAP -->
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+        <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-6">
+
+          <div>
+            <h3 class="text-xl font-bold">
+              🧭 Personalized Skill-Gap Roadmap
+            </h3>
+
+            <p class="text-xs text-gray-500 mt-1">
+              Complete each module to strengthen your Python skills.
+            </p>
+          </div>
+
+          <div class="text-right">
+            <span id="learning-percent" class="text-2xl font-black text-indigo-400">
+              0%
+            </span>
+
+            <p class="text-xs text-gray-500">
+              Learning Progress
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="w-full bg-gray-800 rounded-full h-2 mb-6">
+          <div
+            id="learning-bar"
+            class="progress-bar bg-indigo-500 h-2 rounded-full"
+            style="width: 0%">
+          </div>
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <!-- MODULE 1 -->
+          <div class="module-card bg-gray-950 border border-gray-800 rounded-xl p-5">
+
+            <div class="flex justify-between gap-3">
+
+              <div>
+                <span class="text-xs text-indigo-400 font-bold">
+                  MODULE 1
+                </span>
+
+                <h4 class="font-bold mt-1">
+                  Python Data Structures
+                </h4>
+
+                <p class="text-xs text-gray-500 mt-2">
+                  Lists, tuples, dictionaries and sets.
+                </p>
+              </div>
+
+              <span id="module-icon-1" class="text-xl">
+                🔒
+              </span>
+
+            </div>
+
+            <button
+              onclick="completeModule(1)"
+              id="module-btn-1"
+              class="w-full mt-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">
+              Complete Module
+            </button>
+
+          </div>
+
+
+          <!-- MODULE 2 -->
+          <div class="module-card bg-gray-950 border border-gray-800 rounded-xl p-5">
+
+            <div class="flex justify-between gap-3">
+
+              <div>
+                <span class="text-xs text-indigo-400 font-bold">
+                  MODULE 2
+                </span>
+
+                <h4 class="font-bold mt-1">
+                  File Handling
+                </h4>
+
+                <p class="text-xs text-gray-500 mt-2">
+                  Read, write and process files using Python.
+                </p>
+              </div>
+
+              <span id="module-icon-2" class="text-xl">
+                🔒
+              </span>
+
+            </div>
+
+            <button
+              onclick="completeModule(2)"
+              id="module-btn-2"
+              class="w-full mt-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">
+              Complete Module
+            </button>
+
+          </div>
+
+
+          <!-- MODULE 3 -->
+          <div class="module-card bg-gray-950 border border-gray-800 rounded-xl p-5">
+
+            <div class="flex justify-between gap-3">
+
+              <div>
+                <span class="text-xs text-indigo-400 font-bold">
+                  MODULE 3
+                </span>
+
+                <h4 class="font-bold mt-1">
+                  CRUD Operations
+                </h4>
+
+                <p class="text-xs text-gray-500 mt-2">
+                  Build practical create, read, update and delete operations.
+                </p>
+              </div>
+
+              <span id="module-icon-3" class="text-xl">
+                🔒
+              </span>
+
+            </div>
+
+            <button
+              onclick="completeModule(3)"
+              id="module-btn-3"
+              class="w-full mt-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">
+              Complete Module
+            </button>
+
+          </div>
+
+
+          <!-- MODULE 4 -->
+          <div class="module-card bg-gray-950 border border-gray-800 rounded-xl p-5">
+
+            <div class="flex justify-between gap-3">
+
+              <div>
+                <span class="text-xs text-indigo-400 font-bold">
+                  MODULE 4
+                </span>
+
+                <h4 class="font-bold mt-1">
+                  Build a Project
+                </h4>
+
+                <p class="text-xs text-gray-500 mt-2">
+                  Apply your learning through a practical project.
+                </p>
+              </div>
+
+              <span id="module-icon-4" class="text-xl">
+                🔒
+              </span>
+
+            </div>
+
+            <button
+              onclick="completeModule(4)"
+              id="module-btn-4"
+              class="w-full mt-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">
+              Complete Module
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACHIEVEMENTS -->
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+        <h3 class="text-xl font-bold mb-6">
+          🏅 Achievements
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div id="badge-project" class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
+            <div class="text-3xl">🏗️</div>
+            <h4 class="font-bold mt-3">
+              Project Builder
+            </h4>
+            <p class="text-xs text-gray-500 mt-1">
+              Submit your capstone project.
+            </p>
+          </div>
+
+          <div id="badge-mentor" class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
+            <div class="text-3xl">👨‍🏫</div>
+            <h4 class="font-bold mt-3">
+              Mentor Verified
+            </h4>
+            <p class="text-xs text-gray-500 mt-1">
+              Get your project approved by a mentor.
+            </p>
+          </div>
+
+          <div id="badge-job" class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
+            <div class="text-3xl">🎯</div>
+            <h4 class="font-bold mt-3">
+              Job Ready
+            </h4>
+            <p class="text-xs text-gray-500 mt-1">
+              Complete the complete skill journey.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================== -->
+    <!-- MENTOR VIEW -->
+    <!-- ===================================================== -->
+
+    <section id="view-mentor" class="hidden space-y-8">
+
+      <div class="bg-gradient-to-r from-emerald-950 via-gray-900 to-gray-950 border border-emerald-500/30 rounded-3xl p-8">
+
+        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+          Faculty Board
+        </span>
+
+        <h2 class="text-3xl font-black mt-4">
+          Mentor Review Dashboard
+        </h2>
+
+        <p class="text-gray-400 text-sm mt-2">
+          Review student projects and verify practical skills.
         </p>
 
-        <div class="flex items-center justify-between pt-2">
-          <a href="https://github.com/colab-demo/python-student-management" target="_blank" class="text-xs text-indigo-400 hover:underline flex items-center gap-1">
-            🔗 Inspect GitHub Repository
-          </a>
-          <button onclick="approveProject()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-600/20">
-            4. Approve & Sign (Dr. Alan Thomas)
+      </div>
+
+
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+        <div class="flex justify-between items-center mb-6">
+
+          <div>
+            <h3 class="text-xl font-bold">
+              📋 Submitted Projects
+            </h3>
+
+            <p class="text-xs text-gray-500 mt-1">
+              Student project submissions waiting for verification.
+            </p>
+          </div>
+
+          <button
+            onclick="loadMentorProject()"
+            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">
+            Refresh
           </button>
+
         </div>
-      </div>
-    </div>
 
-    <!-- 3. RECRUITER VIEW -->
-    <div id="view-recruiter" class="hidden space-y-8">
-      <div class="bg-gradient-to-r from-purple-900/30 via-gray-900 to-gray-900 border border-purple-500/20 rounded-2xl p-6">
-        <span class="text-xs font-semibold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/20">Recruiter Portal</span>
-        <h2 class="text-2xl font-bold text-white mt-2">Verified Talent Search</h2>
-        <p class="text-xs text-gray-400 mt-1">Query candidates backed by faculty endorsements and verified assessments.</p>
+
+        <div id="mentor-project-container">
+
+          <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
+
+            <div class="text-4xl">
+              👨‍🏫
+            </div>
+
+            <p class="text-gray-400 mt-3">
+              Click Refresh to load the latest student project.
+            </p>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <div class="bg-gray-900 rounded-2xl border border-gray-800 p-6 shadow-xl">
-        <div class="flex flex-col md:flex-row gap-4 justify-between items-center border-b border-gray-800 pb-6 mb-6">
-          <div class="w-full md:w-96 flex gap-2">
-            <input type="text" id="skill-search-input" value="Python" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-purple-500" />
-            <button onclick="searchCandidates()" class="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/20 flex-shrink-0">
-              5. Search Candidates
+    </section>
+
+
+    <!-- ===================================================== -->
+    <!-- RECRUITER VIEW -->
+    <!-- ===================================================== -->
+
+    <section id="view-recruiter" class="hidden space-y-8">
+
+      <div class="bg-gradient-to-r from-purple-950 via-gray-900 to-gray-950 border border-purple-500/30 rounded-3xl p-8">
+
+        <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">
+          Recruiter Portal
+        </span>
+
+        <h2 class="text-3xl font-black mt-4">
+          Verified Talent Search
+        </h2>
+
+        <p class="text-gray-400 text-sm mt-2">
+          Find candidates backed by assessment, project and mentor verification.
+        </p>
+
+      </div>
+
+
+      <!-- PROOF OF SKILL -->
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
+
+          <div>
+            <h3 class="text-xl font-bold">
+              🔎 Search Verified Skills
+            </h3>
+
+            <p class="text-xs text-gray-500 mt-1">
+              Recruiters see proof instead of unverified skill claims.
+            </p>
+          </div>
+
+          <div class="flex gap-2 w-full md:w-auto">
+
+            <input
+              id="skill-search-input"
+              type="text"
+              value="Python"
+              placeholder="Enter skill"
+              class="w-full md:w-64 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+
+            <button
+              onclick="searchCandidates()"
+              class="px-5 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-xs font-bold whitespace-nowrap">
+              Search
             </button>
+
           </div>
-          <div class="text-xs text-gray-400">
-            Filter: <span class="text-purple-400 font-semibold">Faculty-Endorsed Only</span>
-          </div>
+
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="border-b border-gray-800 text-xs text-gray-400 uppercase tracking-wider">
-                <th class="py-3 px-4">Candidate</th>
-                <th class="py-3 px-4">Verified Skill</th>
-                <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4">Project Proof</th>
-              </tr>
-            </thead>
-            <tbody id="recruiter-results-body" class="divide-y divide-gray-800 text-xs">
-              <tr>
-                <td colspan="4" class="py-8 text-center text-gray-500">
-                  Click "Search Candidates" to query verified student profiles.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div id="recruiter-results">
+
+          <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
+
+            <div class="text-4xl">
+              🎯
+            </div>
+
+            <p class="text-gray-400 mt-3">
+              Search for a verified skill to discover candidates.
+            </p>
+
+          </div>
+
         </div>
+
       </div>
-    </div>
+
+    </section>
 
   </main>
 
-  <footer class="bg-gray-900 border-t border-gray-800 py-4 text-center text-xs text-gray-500">
-    Co-Lab Hackathon Demo Platform &bull; Connected to FastAPI Local Server (Port 8000)
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 border-t border-gray-800 py-5 text-center text-xs text-gray-500">
+    Co-Lab Hackathon Demo Platform • Connected to FastAPI Local Server
   </footer>
 
-  <script>
-    const API = 'http://127.0.0.1:8000';
 
-    function showNotification(data, isError = false) {
-      const toast = document.getElementById('toast');
-      const content = document.getElementById('toast-content');
-      toast.classList.remove('hidden');
-      
-      if (isError) {
-        content.className = "p-4 rounded-xl text-xs font-mono bg-red-950/80 border border-red-800 text-red-300";
-        content.innerHTML = `<strong>[API Error]</strong> Failed to reach server. Make sure FastAPI backend is running on port 8000.`;
+  <script>
+
+    const API = "http://127.0.0.1:8000";
+
+    const STUDENT_ID = 4;
+
+    let quizQuestions = [];
+
+    let selectedAnswers = {};
+
+    let assessmentCompleted = false;
+
+    let assessmentScore = 0;
+
+    let projectSubmitted = false;
+
+    let projectVerified = false;
+
+    let currentProjectId = null;
+
+    let completedModules = [false, false, false, false];
+
+
+    // =========================================================
+    // NOTIFICATION
+    // =========================================================
+
+    function showNotification(message, type = "success") {
+
+      const box = document.getElementById("notification");
+      const content = document.getElementById("notification-content");
+
+      box.classList.remove("hidden");
+
+      if (type === "error") {
+
+        content.className =
+          "rounded-xl px-5 py-4 border text-sm bg-red-950/50 border-red-800 text-red-300";
+
       } else {
-        content.className = "p-4 rounded-xl text-xs font-mono bg-indigo-950/80 border border-indigo-800 text-indigo-300";
-        content.innerHTML = `<strong>[API Response]</strong> <pre class="mt-1 inline-block whitespace-pre-wrap">${JSON.stringify(data, null, 2)}</pre>`;
+
+        content.className =
+          "rounded-xl px-5 py-4 border text-sm bg-emerald-950/50 border-emerald-800 text-emerald-300";
+
+      }
+
+      content.textContent = message;
+
+      setTimeout(() => {
+        box.classList.add("hidden");
+      }, 4000);
+    }
+
+
+    // =========================================================
+    // TAB SWITCHING
+    // =========================================================
+
+    function switchTab(role) {
+
+      const roles = ["student", "mentor", "recruiter"];
+
+      roles.forEach(item => {
+
+        document
+          .getElementById("view-" + item)
+          .classList.add("hidden");
+
+        document
+          .getElementById("tab-" + item)
+          .className =
+          "px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white";
+
+      });
+
+      document
+        .getElementById("view-" + role)
+        .classList.remove("hidden");
+
+      document
+        .getElementById("tab-" + role)
+        .className =
+        "px-5 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white";
+
+      if (role === "mentor") {
+        loadMentorProject();
+      }
+
+    }
+
+
+    // =========================================================
+    // START ASSESSMENT
+    // =========================================================
+
+    async function startAssessment() {
+
+      const container = document.getElementById("quiz-container");
+
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <div class="text-3xl animate-pulse">⏳</div>
+          <p class="text-gray-400 text-sm mt-3">
+            Loading your assessment...
+          </p>
+        </div>
+      `;
+
+      try {
+
+        const response =
+          await fetch(API + "/api/assessment/questions?skill=Python");
+
+        if (!response.ok) {
+          throw new Error("Unable to load assessment");
+        }
+
+        const data = await response.json();
+
+        quizQuestions = data.questions || [];
+
+        selectedAnswers = {};
+
+        if (quizQuestions.length === 0) {
+
+          container.innerHTML = `
+            <div class="text-center text-red-400 py-8">
+              No assessment questions available.
+            </div>
+          `;
+
+          return;
+        }
+
+        renderQuiz();
+
+        document
+          .getElementById("start-assessment-btn")
+          .textContent = "Assessment Started";
+
+        document
+          .getElementById("start-assessment-btn")
+          .disabled = true;
+
+        document
+          .getElementById("start-assessment-btn")
+          .classList.add("opacity-50", "cursor-not-allowed");
+
+        showNotification(
+          "Python assessment started. Select one answer for every question."
+        );
+
+      } catch (error) {
+
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <div class="text-3xl">⚠️</div>
+            <p class="text-red-400 text-sm mt-3">
+              Could not connect to the FastAPI server.
+            </p>
+          </div>
+        `;
+
+        showNotification(
+          "Make sure FastAPI is running on port 8000.",
+          "error"
+        );
       }
     }
 
-    function switchTab(role) {
-      ['student', 'mentor', 'recruiter'].forEach(r => {
-        document.getElementById(`view-${r}`).classList.add('hidden');
-        document.getElementById(`tab-${r}`).className = 'px-5 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white';
+
+    // =========================================================
+    // RENDER QUIZ
+    // =========================================================
+
+    function renderQuiz() {
+
+      const container = document.getElementById("quiz-container");
+
+      let html = `
+        <div class="space-y-6">
+
+          <div class="flex justify-between items-center">
+
+            <div>
+              <span class="text-xs font-bold text-indigo-400">
+                PYTHON SKILL ASSESSMENT
+              </span>
+
+              <p class="text-xs text-gray-500 mt-1">
+                5 questions • Choose one answer for each
+              </p>
+            </div>
+
+            <span class="text-xs text-gray-500">
+              ${quizQuestions.length} Questions
+            </span>
+
+          </div>
+      `;
+
+
+      quizQuestions.forEach((question, index) => {
+
+        html += `
+          <div class="border border-gray-800 rounded-xl p-5 bg-gray-950">
+
+            <div class="flex gap-2">
+
+              <span class="text-indigo-400 font-black">
+                Q${index + 1}.
+              </span>
+
+              <p class="font-semibold text-white">
+                ${question.question}
+              </p>
+
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+        `;
+
+
+        question.options.forEach((option, optionIndex) => {
+
+          const optionId =
+            "q" + question.id + "_option" + optionIndex;
+
+          html += `
+            <label
+              for="${optionId}"
+              id="${optionId}_label"
+              class="option-card border border-gray-800 bg-gray-900 rounded-lg p-3 flex items-center gap-3">
+
+              <input
+                type="radio"
+                id="${optionId}"
+                name="question_${question.id}"
+                value="${escapeHtml(option)}"
+                onchange="selectAnswer(${question.id}, '${escapeJs(option)}', '${optionId}_label')"
+                class="accent-indigo-500">
+
+              <span class="text-sm text-gray-300">
+                ${option}
+              </span>
+
+            </label>
+          `;
+
+        });
+
+
+        html += `
+            </div>
+          </div>
+        `;
+
       });
-      document.getElementById(`view-${role}`).classList.remove('hidden');
-      document.getElementById(`tab-${role}`).className = 'px-5 py-2 rounded-lg text-xs font-bold transition-all bg-indigo-600 text-white shadow-md';
+
+
+      html += `
+        </div>
+      `;
+
+      container.innerHTML = html;
+
+
+      const submitButton =
+        document.getElementById("submit-quiz-btn");
+
+      submitButton.disabled = false;
+
+      submitButton.className =
+        "w-full mt-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm transition";
+
+      document.getElementById("status-assessment").textContent =
+        "In Progress";
+
+      document.getElementById("status-assessment").className =
+        "text-xs text-indigo-400 mt-2 font-semibold";
     }
 
-    const getQuiz = () => fetch(`${API}/api/assessment/questions?skill=Python`)
-      .then(r => r.json())
-      .then(data => {
-        showNotification(data);
-        const container = document.getElementById('quiz-container');
-        if (Array.isArray(data) || data.questions) {
-          const qList = data.questions || data;
-          container.innerHTML = `<div class="w-full text-left space-y-3">` + 
-            qList.map((q, idx) => `<div class="p-2.5 bg-gray-900 rounded-lg border border-gray-800">
-              <span class="font-bold text-indigo-400">Q${idx + 1}:</span> ${q.question || q.title || 'Python Module Question'}
-            </div>`).join('') + `</div>`;
-        } else {
-          container.innerHTML = `<div class="w-full text-left font-mono text-emerald-400"><pre>${JSON.stringify(data, null, 2)}</pre></div>`;
+
+    // =========================================================
+    // SELECT ANSWER
+    // =========================================================
+
+    function selectAnswer(questionId, answer, labelId) {
+
+      selectedAnswers[questionId] = answer;
+
+      const labels =
+        document.querySelectorAll(
+          `[id^="q${questionId}_option"][id$="_label"]`
+        );
+
+      labels.forEach(label => {
+        label.classList.remove("selected");
+      });
+
+      const selectedLabel =
+        document.getElementById(labelId);
+
+      if (selectedLabel) {
+        selectedLabel.classList.add("selected");
+      }
+
+    }
+
+
+    // =========================================================
+    // SUBMIT QUIZ
+    // =========================================================
+
+    async function submitQuiz() {
+
+      if (quizQuestions.length === 0) {
+
+        showNotification(
+          "Please start the assessment first.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      if (
+        Object.keys(selectedAnswers).length !==
+        quizQuestions.length
+      ) {
+
+        showNotification(
+          "Please answer all 5 questions before submitting.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      const submitButton =
+        document.getElementById("submit-quiz-btn");
+
+      submitButton.disabled = true;
+
+      submitButton.textContent =
+        "Submitting Assessment...";
+
+
+      try {
+
+        const answers = {};
+
+        Object.keys(selectedAnswers).forEach(questionId => {
+
+          answers[questionId] =
+            selectedAnswers[questionId];
+
+        });
+
+
+        const response =
+          await fetch(API + "/api/assessment/submit", {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+              student_id: STUDENT_ID,
+              skill: "Python",
+              answers: answers
+            })
+
+          });
+
+
+        const data = await response.json();
+
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || "Assessment failed");
         }
-      })
-      .catch(err => showNotification(err, true));
 
-    const submitQuiz = () => fetch(`${API}/api/assessment/submit`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        student_id: 4,
-        skill: "Python",
-        answers: { "1": "wrong", "2": "wrong", "3": "3", "4": "wrong", "5": "wrong" }
-      })
-    })
-    .then(r => r.json())
-    .then(data => showNotification(data))
-    .catch(err => showNotification(err, true));
 
-    const submitProject = () => fetch(`${API}/api/student/project`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        student_id: 4,
-        title: document.getElementById('proj-title').value,
-        description: document.getElementById('proj-desc').value,
-        github_url: document.getElementById('proj-github').value
-      })
-    })
-    .then(r => r.json())
-    .then(data => showNotification(data))
-    .catch(err => showNotification(err, true));
+        assessmentCompleted = true;
 
-    const approveProject = () => fetch(`${API}/api/mentor/approve/102?mentor_name=Dr.%20Alan%20Thomas`, {
-      method: 'POST'
-    })
-    .then(r => r.json())
-    .then(data => {
-      showNotification(data);
-      const badge = document.getElementById('approval-status-badge');
-      badge.className = "px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-semibold flex items-center gap-1";
-      badge.innerHTML = "✓ Approved by Dr. Alan Thomas";
-    })
-    .catch(err => showNotification(err, true));
+        assessmentScore = data.score;
 
-    const searchCandidates = () => {
-      const skill = document.getElementById('skill-search-input').value;
-      fetch(`${API}/api/recruiter/search?skill=${encodeURIComponent(skill)}`)
-        .then(r => r.json())
-        .then(data => {
-          showNotification(data);
-          const tbody = document.getElementById('recruiter-results-body');
-          if (Array.isArray(data) && data.length > 0) {
-            tbody.innerHTML = data.map(item => `
-              <tr class="hover:bg-gray-800/50">
-                <td class="py-3 px-4 font-semibold text-white">Student #${item.student_id || '4'}</td>
-                <td class="py-3 px-4"><span class="px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded border border-purple-500/20 font-bold">${item.skill || skill}</span></td>
-                <td class="py-3 px-4"><span class="text-emerald-400 flex items-center gap-1">✓ Endorsed</span></td>
-                <td class="py-3 px-4"><a href="${item.github_url || '#'}" target="_blank" class="text-indigo-400 hover:underline">View Repository</a></td>
-              </tr>
-            `).join('');
-          } else {
-            tbody.innerHTML = `
-              <tr>
-                <td class="py-3 px-4 font-semibold text-white">Student #4</td>
-                <td class="py-3 px-4"><span class="px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded border border-purple-500/20 font-bold">${skill}</span></td>
-                <td class="py-3 px-4"><span class="text-emerald-400 flex items-center gap-1">✓ Endorsed (Demo)</span></td>
-                <td class="py-3 px-4"><a href="https://github.com/colab-demo/python-student-management" target="_blank" class="text-indigo-400 hover:underline">View Repository</a></td>
-              </tr>
-            `;
-          }
-        })
-        .catch(err => showNotification(err, true));
-    };
+
+        document.getElementById("status-assessment").textContent =
+          "Completed • " + data.score + "/" + data.total;
+
+        document.getElementById("status-assessment").className =
+          "text-xs text-emerald-400 mt-2 font-bold";
+
+
+        if (data.skill_gap) {
+
+          document.getElementById("status-gap").textContent =
+            "Gap Detected";
+
+          document.getElementById("status-gap").className =
+            "text-xs text-amber-400 mt-2 font-bold";
+
+          document.getElementById("motivation-message").textContent =
+            "💪 Great start! Your roadmap is ready. Complete the learning modules and build your project.";
+
+        } else {
+
+          document.getElementById("status-gap").textContent =
+            "No Major Gap";
+
+          document.getElementById("status-gap").className =
+            "text-xs text-emerald-400 mt-2 font-bold";
+
+          document.getElementById("motivation-message").textContent =
+            "🎉 Excellent assessment! Now turn your knowledge into practical proof.";
+
+        }
+
+
+        const resultBox =
+          document.getElementById("assessment-result");
+
+        resultBox.classList.remove("hidden");
+
+
+        const resultClass =
+          data.score >= 3
+            ? "bg-emerald-950/50 border-emerald-700 text-emerald-300"
+            : "bg-amber-950/50 border-amber-700 text-amber-300";
+
+
+        resultBox.innerHTML = `
+          <div class="border ${resultClass} rounded-xl p-5">
+
+            <div class="flex justify-between items-center">
+
+              <div>
+                <p class="text-xs uppercase font-bold tracking-wider">
+                  Assessment Result
+                </p>
+
+                <h4 class="text-2xl font-black mt-1">
+                  ${data.score}/${data.total}
+                </h4>
+              </div>
+
+              <div class="text-3xl">
+                ${data.score >= 3 ? "🎉" : "💪"}
+              </div>
+
+            </div>
+
+            <p class="text-sm font-semibold mt-3">
+              ${data.result}
+            </p>
+
+            <p class="text-xs mt-2 opacity-80">
+              ${data.message}
+            </p>
+
+          </div>
+        `;
+
+
+        submitButton.textContent =
+          "Assessment Completed";
+
+        submitButton.className =
+          "w-full mt-6 py-3 bg-emerald-900/40 text-emerald-400 font-bold rounded-xl text-sm";
+
+
+        updateJourney();
+
+
+        showNotification(
+          "Assessment completed successfully! Score: " +
+          data.score +
+          "/" +
+          data.total
+        );
+
+      } catch (error) {
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          "Submit Assessment";
+
+        showNotification(
+          error.message || "Could not submit assessment.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    // =========================================================
+    // COMPLETE LEARNING MODULE
+    // =========================================================
+
+    function completeModule(moduleNumber) {
+
+      const index = moduleNumber - 1;
+
+
+      if (completedModules[index]) {
+        return;
+      }
+
+
+      if (
+        moduleNumber > 1 &&
+        !completedModules[index - 1]
+      ) {
+
+        showNotification(
+          "Complete Module " +
+          (moduleNumber - 1) +
+          " first.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      completedModules[index] = true;
+
+
+      const button =
+        document.getElementById(
+          "module-btn-" + moduleNumber
+        );
+
+      const icon =
+        document.getElementById(
+          "module-icon-" + moduleNumber
+        );
+
+
+      button.textContent = "✓ Completed";
+
+      button.disabled = true;
+
+      button.className =
+        "w-full mt-4 py-2 bg-emerald-900/40 text-emerald-400 border border-emerald-800 rounded-lg text-xs font-bold";
+
+
+      icon.textContent = "✓";
+
+
+      updateLearningProgress();
+
+
+      showNotification(
+        "Module " +
+        moduleNumber +
+        " completed! Keep going 🚀"
+      );
+
+    }
+
+
+    // =========================================================
+    // LEARNING PROGRESS
+    // =========================================================
+
+    function updateLearningProgress() {
+
+      const completed =
+        completedModules.filter(Boolean).length;
+
+      const percent =
+        completed * 25;
+
+
+      document.getElementById("learning-percent").textContent =
+        percent + "%";
+
+      document.getElementById("learning-bar").style.width =
+        percent + "%";
+
+      document.getElementById("status-learning").textContent =
+        percent + "% Complete";
+
+
+      if (percent === 100) {
+
+        document.getElementById("motivation-message").textContent =
+          "🔥 Amazing! You completed your entire learning roadmap. Now showcase your project!";
+
+      }
+
+
+      updateJourney();
+
+    }
+
+
+    // =========================================================
+    // PROJECT SUBMISSION
+    // =========================================================
+
+    async function submitProject() {
+
+      const title =
+        document.getElementById("proj-title").value.trim();
+
+      const description =
+        document.getElementById("proj-desc").value.trim();
+
+      const github =
+        document.getElementById("proj-github").value.trim();
+
+
+      if (!title || !description || !github) {
+
+        showNotification(
+          "Please fill in all project fields.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      try {
+
+        const response =
+          await fetch(API + "/api/student/project", {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+              student_id: STUDENT_ID,
+
+              title: title,
+
+              description: description,
+
+              github_url: github
+
+            })
+
+          });
+
+
+        const data = await response.json();
+
+
+        if (!response.ok || data.error) {
+          throw new Error(
+            data.error || "Project submission failed"
+          );
+        }
+
+
+        projectSubmitted = true;
+
+        currentProjectId =
+          data.project.id;
+
+
+        document.getElementById("status-project").textContent =
+          "Submitted • #" + currentProjectId;
+
+        document.getElementById("status-project").className =
+          "text-xs text-indigo-400 mt-2 font-bold";
+
+
+        document
+          .getElementById("badge-project")
+          .classList.remove("opacity-50");
+
+
+        document.getElementById("project-result").classList.remove("hidden");
+
+
+        document.getElementById("project-result").innerHTML = `
+          <div class="bg-indigo-950/40 border border-indigo-700 rounded-xl p-5">
+
+            <p class="text-emerald-400 font-bold text-sm">
+              ✓ Project submitted successfully
+            </p>
+
+            <p class="text-xs text-gray-400 mt-2">
+              Project ID: <span class="text-white font-bold">#${currentProjectId}</span>
+            </p>
+
+            <p class="text-xs text-gray-400 mt-1">
+              Status:
+              <span class="text-amber-400 font-semibold">
+                Pending Mentor Verification
+              </span>
+            </p>
+
+            <p class="text-xs text-gray-500 mt-3">
+              Your mentor can now review your project and GitHub evidence.
+            </p>
+
+          </div>
+        `;
+
+
+        document.getElementById("motivation-message").textContent =
+          "🚀 Your project is submitted! Ask the mentor to review and verify your work.";
+
+
+        updateJourney();
+
+
+        showNotification(
+          "Project submitted successfully. Project ID: #" +
+          currentProjectId
+        );
+
+
+      } catch (error) {
+
+        showNotification(
+          error.message || "Could not submit project.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    // =========================================================
+    // LOAD MENTOR PROJECT
+    // =========================================================
+
+    async function loadMentorProject() {
+
+      const container =
+        document.getElementById(
+          "mentor-project-container"
+        );
+
+
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <div class="text-3xl animate-pulse">⏳</div>
+          <p class="text-gray-500 text-sm mt-3">
+            Loading project...
+          </p>
+        </div>
+      `;
+
+
+      try {
+
+        const response =
+          await fetch(
+            API + "/api/students/portfolio"
+          );
+
+
+        const data =
+          await response.json();
+
+
+        const student =
+          (data.students || []).find(
+            item => item.id === STUDENT_ID
+          );
+
+
+        if (
+          !student ||
+          !student.projects ||
+          student.projects.length === 0
+        ) {
+
+          container.innerHTML = `
+            <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
+
+              <div class="text-4xl">
+                📭
+              </div>
+
+              <p class="text-gray-400 mt-3">
+                No project has been submitted yet.
+              </p>
+
+            </div>
+          `;
+
+          return;
+        }
+
+
+        const project =
+          student.projects[
+            student.projects.length - 1
+          ];
+
+
+        currentProjectId = project.id;
+
+
+        const verified =
+          project.status === "Verified";
+
+
+        container.innerHTML = `
+
+          <div class="border border-gray-800 bg-gray-950 rounded-2xl p-6">
+
+            <div class="flex flex-col md:flex-row justify-between gap-4">
+
+              <div>
+
+                <span class="text-xs text-indigo-400 font-bold">
+                  PROJECT #${project.id}
+                </span>
+
+                <h3 class="text-2xl font-black text-white mt-2">
+                  ${escapeHtml(project.title)}
+                </h3>
+
+                <p class="text-sm text-gray-400 mt-2">
+                  Submitted by:
+                  <span class="text-white font-semibold">
+                    ${escapeHtml(student.name)}
+                  </span>
+                  • Student #${student.id}
+                </p>
+
+              </div>
+
+
+              <div>
+
+                ${
+                  verified
+                    ? `
+                      <span class="px-3 py-2 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold">
+                        ✓ Mentor Verified
+                      </span>
+                    `
+                    : `
+                      <span class="px-3 py-2 rounded-full bg-amber-500/10 border border-amber-700 text-amber-400 text-xs font-bold">
+                        Pending Verification
+                      </span>
+                    `
+                }
+
+              </div>
+
+            </div>
+
+
+            <div class="mt-6 bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+              <p class="text-xs text-gray-500 uppercase font-bold">
+                Project Description
+              </p>
+
+              <p class="text-sm text-gray-300 mt-2">
+                ${escapeHtml(project.description)}
+              </p>
+
+            </div>
+
+
+            <div class="mt-4 bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+              <p class="text-xs text-gray-500 uppercase font-bold">
+                GitHub Evidence
+              </p>
+
+              <a
+                href="${escapeHtml(project.repo)}"
+                target="_blank"
+                class="text-sm text-indigo-400 hover:underline break-all block mt-2">
+                ${escapeHtml(project.repo)}
+              </a>
+
+            </div>
+
+
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+
+              <div class="bg-gray-900 rounded-xl p-4">
+                <p class="text-xs text-gray-500">
+                  Student
+                </p>
+                <p class="font-bold mt-1">
+                  ${escapeHtml(student.name)}
+                </p>
+              </div>
+
+              <div class="bg-gray-900 rounded-xl p-4">
+                <p class="text-xs text-gray-500">
+                  Skill
+                </p>
+                <p class="font-bold text-indigo-400 mt-1">
+                  ${escapeHtml(project.skill || "Python")}
+                </p>
+              </div>
+
+              <div class="bg-gray-900 rounded-xl p-4">
+                <p class="text-xs text-gray-500">
+                  Status
+                </p>
+                <p class="font-bold mt-1 ${
+                  verified
+                    ? "text-emerald-400"
+                    : "text-amber-400"
+                }">
+                  ${verified ? "Verified" : "Pending"}
+                </p>
+              </div>
+
+            </div>
+
+
+            ${
+              !verified
+                ? `
+                  <button
+                    onclick="approveProject(${project.id})"
+                    class="w-full mt-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold">
+                    ✓ Approve & Verify Project
+                  </button>
+                `
+                : `
+                  <div class="mt-6 p-4 bg-emerald-950/30 border border-emerald-800 rounded-xl text-center">
+                    <p class="text-emerald-400 font-bold">
+                      ✓ Project verified by ${escapeHtml(project.verified_by || "Dr. Alan Thomas")}
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-1">
+                      Python is now a verified skill for this student.
+                    </p>
+                  </div>
+                `
+            }
+
+          </div>
+
+        `;
+
+
+      } catch (error) {
+
+        container.innerHTML = `
+          <div class="text-center text-red-400 py-8">
+            Unable to load mentor data.
+          </div>
+        `;
+
+      }
+
+    }
+
+
+    // =========================================================
+    // MENTOR APPROVAL
+    // =========================================================
+
+    async function approveProject(projectId) {
+
+      try {
+
+        const response =
+          await fetch(
+            API +
+            "/api/mentor/approve/" +
+            projectId +
+            "?mentor_name=Dr.%20Alan%20Thomas",
+            {
+              method: "POST"
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok || data.error) {
+          throw new Error(
+            data.error || "Approval failed"
+          );
+        }
+
+
+        projectVerified = true;
+
+
+        document.getElementById("status-verification").textContent =
+          "Mentor Verified";
+
+        document.getElementById("status-verification").className =
+          "text-xs text-emerald-400 mt-2 font-bold";
+
+
+        document
+          .getElementById("badge-mentor")
+          .classList.remove("opacity-50");
+
+
+        document.getElementById("motivation-message").textContent =
+          "🏆 Congratulations! Your skill is now mentor verified and visible to recruiters.";
+
+
+        updateJourney();
+
+
+        showNotification(
+          "Project verified! Python skill is now mentor endorsed."
+        );
+
+
+        loadMentorProject();
+
+
+      } catch (error) {
+
+        showNotification(
+          error.message || "Could not approve project.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    // =========================================================
+    // RECRUITER SEARCH
+    // =========================================================
+
+    async function searchCandidates() {
+
+      const skill =
+        document
+          .getElementById("skill-search-input")
+          .value
+          .trim();
+
+
+      if (!skill) {
+
+        showNotification(
+          "Enter a skill to search.",
+          "error"
+        );
+
+        return;
+      }
+
+
+      const container =
+        document.getElementById(
+          "recruiter-results"
+        );
+
+
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <div class="text-3xl animate-pulse">🔎</div>
+          <p class="text-gray-500 text-sm mt-3">
+            Searching verified candidates...
+          </p>
+        </div>
+      `;
+
+
+      try {
+
+        const response =
+          await fetch(
+            API +
+            "/api/recruiter/search?skill=" +
+            encodeURIComponent(skill)
+          );
+
+
+        const data =
+          await response.json();
+
+
+        const students =
+          data.students || [];
+
+
+        if (students.length === 0) {
+
+          container.innerHTML = `
+            <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
+
+              <div class="text-4xl">
+                🔍
+              </div>
+
+              <p class="text-gray-400 mt-3">
+                No verified candidates found for "${escapeHtml(skill)}".
+              </p>
+
+            </div>
+          `;
+
+          return;
+        }
+
+
+        container.innerHTML = `
+
+          <div class="mb-5 p-4 bg-purple-950/30 border border-purple-800 rounded-xl">
+
+            <p class="text-sm text-purple-300 font-semibold">
+              ✓ ${students.length} verified candidate(s) found for ${escapeHtml(skill)}
+            </p>
+
+            <p class="text-xs text-gray-500 mt-1">
+              Results contain evidence-backed skills.
+            </p>
+
+          </div>
+
+
+          <div class="grid grid-cols-1 gap-5">
+
+            ${students.map(student => {
+
+              const verifiedProjects =
+                student.projects || [];
+
+
+              return `
+
+                <div class="bg-gray-950 border border-gray-800 rounded-2xl p-6">
+
+                  <div class="flex flex-col md:flex-row justify-between gap-5">
+
+                    <div>
+
+                      <p class="text-xs text-gray-500">
+                        CANDIDATE
+                      </p>
+
+                      <h3 class="text-xl font-black mt-1">
+                        ${escapeHtml(student.name)}
+                      </h3>
+
+                      <p class="text-xs text-gray-500 mt-1">
+                        Student #${student.id}
+                      </p>
+
+                      <p class="text-xs text-gray-500 mt-1">
+                        ${escapeHtml(student.college)}
+                      </p>
+
+                    </div>
+
+
+                    <div class="text-left md:text-right">
+
+                      <span class="inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold">
+                        ✓ Verified Skill
+                      </span>
+
+                      <p class="text-indigo-400 font-bold mt-2">
+                        ${escapeHtml(
+                          (student.verified_skills || []).join(", ")
+                        )}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="mt-6">
+
+                    <p class="text-xs text-gray-500 uppercase font-bold">
+                      Proof of Skill
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+
+                      <div class="bg-gray-900 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-500">
+                          Assessment
+                        </p>
+
+                        <p class="text-sm font-bold text-emerald-400 mt-1">
+                          ✓ Completed
+                        </p>
+
+                      </div>
+
+
+                      <div class="bg-gray-900 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-500">
+                          Project
+                        </p>
+
+                        <p class="text-sm font-bold text-emerald-400 mt-1">
+                          ✓ Mentor Verified
+                        </p>
+
+                      </div>
+
+
+                      <div class="bg-gray-900 rounded-xl p-4">
+
+                        <p class="text-xs text-gray-500">
+                          Verification
+                        </p>
+
+                        <p class="text-sm font-bold text-emerald-400 mt-1">
+                          ✓ Faculty Endorsed
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  ${
+                    verifiedProjects.length > 0
+                      ? verifiedProjects.map(project => `
+
+                        <div class="mt-5 bg-gray-900 border border-gray-800 rounded-xl p-5">
+
+                          <p class="text-xs text-gray-500">
+                            VERIFIED PROJECT
+                          </p>
+
+                          <h4 class="font-bold mt-1">
+                            ${escapeHtml(project.title)}
+                          </h4>
+
+                          <p class="text-xs text-gray-400 mt-2">
+                            ${escapeHtml(project.description)}
+                          </p>
+
+                          <a
+                            href="${escapeHtml(project.repo)}"
+                            target="_blank"
+                            class="inline-block mt-3 text-xs text-indigo-400 hover:underline">
+                            🔗 View GitHub Evidence
+                          </a>
+
+                        </div>
+
+                      `).join("")
+                      : ""
+                  }
+
+                </div>
+
+              `;
+
+            }).join("")}
+
+          </div>
+
+        `;
+
+
+        showNotification(
+          students.length +
+          " verified candidate(s) found."
+        );
+
+
+      } catch (error) {
+
+        container.innerHTML = `
+          <div class="text-center text-red-400 py-8">
+            Unable to search candidates.
+          </div>
+        `;
+
+        showNotification(
+          "Make sure FastAPI is running on port 8000.",
+          "error"
+        );
+
+      }
+
+    }
+
+
+    // =========================================================
+    // UPDATE JOURNEY
+    // =========================================================
+
+    function updateJourney() {
+
+      const learningCompleted =
+        completedModules.filter(Boolean).length === 4;
+
+
+      let readiness = 0;
+
+
+      if (assessmentCompleted) {
+        readiness += 25;
+      }
+
+
+      const learningCount =
+        completedModules.filter(Boolean).length;
+
+      readiness +=
+        learningCount * 6.25;
+
+
+      if (projectSubmitted) {
+        readiness += 25;
+      }
+
+
+      if (projectVerified) {
+        readiness += 25;
+      }
+
+
+      readiness =
+        Math.min(100, Math.round(readiness));
+
+
+      document.getElementById("hero-readiness").textContent =
+        readiness + "%";
+
+
+      document.getElementById("readiness-number").textContent =
+        readiness + "%";
+
+
+      document.getElementById("readiness-bar").style.width =
+        readiness + "%";
+
+
+      if (readiness === 100) {
+
+        document.getElementById("readiness-text").textContent =
+          "Congratulations! You are Industry Ready.";
+
+        document.getElementById("motivation-message").textContent =
+          "🎯 You did it! Your complete skill journey is now ready to showcase to recruiters.";
+
+
+        document
+          .getElementById("badge-job")
+          .classList.remove("opacity-50");
+
+      } else {
+
+        document.getElementById("readiness-text").textContent =
+          "Complete your assessment, learning modules, project and mentor verification.";
+
+      }
+
+
+      if (learningCompleted) {
+
+        document.getElementById("status-learning").textContent =
+          "100% Complete";
+
+        document.getElementById("status-learning").className =
+          "text-xs text-emerald-400 mt-2 font-bold";
+
+      }
+
+
+      if (projectSubmitted) {
+
+        document.getElementById("status-project").textContent =
+          currentProjectId
+            ? "Submitted • #" + currentProjectId
+            : "Completed";
+
+      }
+
+
+      if (projectVerified) {
+
+        document.getElementById("status-verification").textContent =
+          "Mentor Verified";
+
+      }
+
+    }
+
+
+    // =========================================================
+    // ESCAPE HTML
+    // =========================================================
+
+    function escapeHtml(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    // =========================================================
+    // ESCAPE JAVASCRIPT
+    // =========================================================
+
+    function escapeJs(value) {
+
+      return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+
+    }
+
+
+    // =========================================================
+    // INITIAL STATE
+    // =========================================================
+
+    updateLearningProgress();
+
+    updateJourney();
+
   </script>
+
 </body>
 </html>

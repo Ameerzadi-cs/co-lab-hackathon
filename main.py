@@ -7,7 +7,7 @@ app = FastAPI(title="Co-Lab API")
 
 
 # ============================================================
-# CORS - Allow frontend to communicate with FastAPI
+# CORS
 # ============================================================
 
 app.add_middleware(
@@ -20,7 +20,7 @@ app.add_middleware(
 
 
 # ============================================================
-# MOCK DATABASE / SEED DATA
+# MOCK DATABASE / DEMO DATA
 # ============================================================
 
 students_db = [
@@ -42,6 +42,14 @@ students_db = [
                 "skill": "Python",
             }
         ],
+        "assessment_completed": True,
+        "assessment_score": 5,
+        "completed_modules": [
+            "Python Data Structures",
+            "File Handling",
+            "CRUD Operations",
+            "Build a Project",
+        ],
     },
     {
         "id": 2,
@@ -61,6 +69,9 @@ students_db = [
                 "skill": "Java",
             }
         ],
+        "assessment_completed": False,
+        "assessment_score": 0,
+        "completed_modules": [],
     },
     {
         "id": 3,
@@ -80,9 +91,14 @@ students_db = [
                 "skill": "Python",
             }
         ],
+        "assessment_completed": True,
+        "assessment_score": 4,
+        "completed_modules": [
+            "Python Data Structures",
+            "File Handling",
+        ],
     },
     {
-        # Golden Path student
         "id": 4,
         "name": "Ananya Rao",
         "email": "ananya@college.edu",
@@ -90,12 +106,15 @@ students_db = [
         "skills": [],
         "verified_skills": [],
         "projects": [],
+        "assessment_completed": False,
+        "assessment_score": 0,
+        "completed_modules": [],
     },
 ]
 
 
 # ============================================================
-# DEMO MENTOR AND RECRUITER PROFILES
+# DEMO MENTOR / RECRUITER
 # ============================================================
 
 mentor_profile = {
@@ -114,7 +133,35 @@ recruiter_profile = {
 
 
 # ============================================================
-# ASSESSMENT DATA
+# LEARNING MODULES
+# ============================================================
+
+learning_modules = [
+    {
+        "id": 1,
+        "title": "Python Data Structures",
+        "description": "Lists, tuples, dictionaries and sets.",
+    },
+    {
+        "id": 2,
+        "title": "File Handling",
+        "description": "Read, write and process files using Python.",
+    },
+    {
+        "id": 3,
+        "title": "CRUD Operations",
+        "description": "Build practical create, read, update and delete operations.",
+    },
+    {
+        "id": 4,
+        "title": "Build a Project",
+        "description": "Apply your learning through a practical Python project.",
+    },
+]
+
+
+# ============================================================
+# PYTHON ASSESSMENT
 # ============================================================
 
 python_questions = [
@@ -168,13 +215,67 @@ class ProjectSubmission(BaseModel):
     github_url: str
 
 
+class ModuleCompletion(BaseModel):
+    student_id: int
+    module_id: int
+
+
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
+
+def find_student(student_id: int):
+    for student in students_db:
+        if student["id"] == student_id:
+            return student
+
+    return None
+
+
+def calculate_progress(student):
+    """
+    Demo industry-readiness calculation.
+
+    20%  = assessment completed
+    10%  = each of the 4 learning modules
+    20%  = project submitted
+    20%  = mentor verification
+
+    Total = 100%
+    """
+
+    progress = 0
+
+    if student.get("assessment_completed"):
+        progress += 20
+
+    completed_modules = student.get("completed_modules", [])
+
+    progress += min(len(completed_modules), 4) * 10
+
+    if len(student.get("projects", [])) > 0:
+        progress += 20
+
+    has_verified_project = any(
+        project.get("status") == "Verified"
+        for project in student.get("projects", [])
+    )
+
+    if has_verified_project:
+        progress += 20
+
+    return min(progress, 100)
+
+
 # ============================================================
 # HOME / HEALTH CHECK
 # ============================================================
 
 @app.get("/")
 def home():
-    return {"message": "Co-Lab API is live!"}
+    return {
+        "message": "Co-Lab API is live!"
+    }
 
 
 # ============================================================
@@ -183,7 +284,95 @@ def home():
 
 @app.get("/api/students/portfolio")
 def get_portfolio():
-    return {"students": students_db}
+    return {
+        "students": students_db
+    }
+
+
+# ============================================================
+# STUDENT PROGRESS
+# ============================================================
+
+@app.get("/api/student/{student_id}/progress")
+def get_student_progress(student_id: int):
+
+    student = find_student(student_id)
+
+    if student is None:
+        return {
+            "error": "Student not found."
+        }
+
+    progress = calculate_progress(student)
+
+    completed_modules = student.get("completed_modules", [])
+
+    verified_project = any(
+        project.get("status") == "Verified"
+        for project in student.get("projects", [])
+    )
+
+    return {
+        "student_id": student_id,
+        "industry_readiness": progress,
+        "assessment_completed": student.get("assessment_completed", False),
+        "assessment_score": student.get("assessment_score", 0),
+        "completed_modules": completed_modules,
+        "total_modules": len(learning_modules),
+        "project_submitted": len(student.get("projects", [])) > 0,
+        "mentor_verified": verified_project,
+        "verified_skills": student.get("verified_skills", []),
+    }
+
+
+# ============================================================
+# LEARNING MODULES
+# ============================================================
+
+@app.get("/api/learning/modules")
+def get_learning_modules():
+    return {
+        "modules": learning_modules
+    }
+
+
+# ============================================================
+# COMPLETE LEARNING MODULE
+# ============================================================
+
+@app.post("/api/learning/complete")
+def complete_learning_module(completion: ModuleCompletion):
+
+    student = find_student(completion.student_id)
+
+    if student is None:
+        return {
+            "error": "Student not found."
+        }
+
+    module = None
+
+    for current_module in learning_modules:
+        if current_module["id"] == completion.module_id:
+            module = current_module
+            break
+
+    if module is None:
+        return {
+            "error": "Learning module not found."
+        }
+
+    if module["title"] not in student["completed_modules"]:
+        student["completed_modules"].append(module["title"])
+
+    progress = calculate_progress(student)
+
+    return {
+        "message": "Learning module completed.",
+        "module": module,
+        "industry_readiness": progress,
+        "completed_modules": student["completed_modules"],
+    }
 
 
 # ============================================================
@@ -230,13 +419,7 @@ def submit_assessment(submission: AssessmentSubmission):
             "error": "Only Python assessment is available for the demo."
         }
 
-    # Check whether student exists
-    student = None
-
-    for current_student in students_db:
-        if current_student["id"] == submission.student_id:
-            student = current_student
-            break
+    student = find_student(submission.student_id)
 
     if student is None:
         return {
@@ -246,38 +429,41 @@ def submit_assessment(submission: AssessmentSubmission):
     score = 0
 
     for question in python_questions:
+
         question_id = question["id"]
 
-        if submission.answers.get(question_id) == question["answer"]:
+        submitted_answer = submission.answers.get(question_id)
+
+        if submitted_answer == question["answer"]:
             score += 1
 
     total_questions = len(python_questions)
 
-    # IMPORTANT:
-    # Passing the assessment does NOT verify the skill.
-    # Verification happens only after mentor approval.
-
     if score >= 3:
+
         result = "Pass"
         skill_gap = False
-        message = "You passed the Python assessment."
-        suggested_project = None
 
-    else:
-        result = "Skill Gap Detected"
-        skill_gap = True
         message = (
-            "Your Python skill needs improvement. "
-            "Complete the suggested project to build practical experience."
+            "You passed the Python assessment. "
+            "Continue learning and build a project to gain practical experience."
         )
 
-        suggested_project = {
-            "title": "Python Student Skill Builder",
-            "description": (
-                "Build a Python-based student management application "
-                "with CRUD operations, file handling, and basic data processing."
-            ),
-        }
+    else:
+
+        result = "Skill Gap Detected"
+        skill_gap = True
+
+        message = (
+            "Your Python skill needs improvement. "
+            "Complete the recommended learning modules and build the suggested project."
+        )
+
+    # Assessment is now completed.
+    student["assessment_completed"] = True
+    student["assessment_score"] = score
+
+    progress = calculate_progress(student)
 
     return {
         "student_id": submission.student_id,
@@ -287,7 +473,7 @@ def submit_assessment(submission: AssessmentSubmission):
         "result": result,
         "skill_gap": skill_gap,
         "message": message,
-        "suggested_project": suggested_project,
+        "industry_readiness": progress,
     }
 
 
@@ -298,37 +484,99 @@ def submit_assessment(submission: AssessmentSubmission):
 @app.post("/api/student/project")
 def submit_project(submission: ProjectSubmission):
 
-    for student in students_db:
+    student = find_student(submission.student_id)
 
-        if student["id"] == submission.student_id:
+    if student is None:
+        return {
+            "error": "Student not found."
+        }
 
-            # Generate the next project ID
-            new_project_id = 1
+    # Generate next project ID
+    new_project_id = 1
 
-            for existing_student in students_db:
-                for project in existing_student["projects"]:
-                    if project["id"] >= new_project_id:
-                        new_project_id = project["id"] + 1
+    for existing_student in students_db:
 
-            new_project = {
-                "id": new_project_id,
-                "title": submission.title,
-                "description": submission.description,
-                "repo": submission.github_url,
-                "status": "Pending Approval",
-                "verified_by": None,
-                "skill": "Python",
-            }
+        for project in existing_student.get("projects", []):
 
-            student["projects"].append(new_project)
+            if project["id"] >= new_project_id:
+                new_project_id = project["id"] + 1
 
-            return {
-                "message": "Project submitted successfully.",
-                "project": new_project,
-            }
+    new_project = {
+        "id": new_project_id,
+        "title": submission.title,
+        "description": submission.description,
+        "repo": submission.github_url,
+        "status": "Pending Approval",
+        "verified_by": None,
+        "skill": "Python",
+    }
+
+    student["projects"].append(new_project)
+
+    progress = calculate_progress(student)
 
     return {
-        "error": "Student not found."
+        "message": "Project submitted successfully.",
+        "project": new_project,
+        "industry_readiness": progress,
+    }
+
+
+# ============================================================
+# GET STUDENT PROJECTS
+# ============================================================
+
+@app.get("/api/student/{student_id}/projects")
+def get_student_projects(student_id: int):
+
+    student = find_student(student_id)
+
+    if student is None:
+        return {
+            "error": "Student not found."
+        }
+
+    return {
+        "student_id": student_id,
+        "projects": student.get("projects", [])
+    }
+
+
+# ============================================================
+# MENTOR PROFILE
+# ============================================================
+
+@app.get("/api/mentor/profile")
+def get_mentor_profile():
+
+    return mentor_profile
+
+
+# ============================================================
+# MENTOR PENDING PROJECTS
+# ============================================================
+
+@app.get("/api/mentor/projects")
+def get_mentor_projects():
+
+    pending_projects = []
+
+    for student in students_db:
+
+        for project in student.get("projects", []):
+
+            if project.get("status") == "Pending Approval":
+
+                pending_projects.append(
+                    {
+                        "student_id": student["id"],
+                        "student_name": student["name"],
+                        "project": project,
+                    }
+                )
+
+    return {
+        "projects": pending_projects
     }
 
 
@@ -341,7 +589,7 @@ def approve_project(project_id: int, mentor_name: str):
 
     for student in students_db:
 
-        for project in student["projects"]:
+        for project in student.get("projects", []):
 
             if project["id"] == project_id:
 
@@ -350,23 +598,36 @@ def approve_project(project_id: int, mentor_name: str):
 
                 skill = project.get("skill")
 
-                # Mentor approval is what creates the verified skill
+                # Mentor approval creates verified skill.
                 if skill and skill not in student["verified_skills"]:
                     student["verified_skills"].append(skill)
 
                 if skill and skill not in student["skills"]:
                     student["skills"].append(skill)
 
+                progress = calculate_progress(student)
+
                 return {
                     "message": "Project verified and skill endorsed!",
                     "student_id": student["id"],
                     "verified_skill": skill,
                     "project": project,
+                    "industry_readiness": progress,
                 }
 
     return {
         "error": "Project not found."
     }
+
+
+# ============================================================
+# RECRUITER PROFILE
+# ============================================================
+
+@app.get("/api/recruiter/profile")
+def get_recruiter_profile():
+
+    return recruiter_profile
 
 
 # ============================================================
@@ -382,24 +643,27 @@ def recruiter_search(skill: str):
 
         verified_skills = student.get("verified_skills", [])
 
-        # Only students with verified skills appear
+        # Only students with verified skills appear.
         if any(
             verified_skill.lower() == skill.lower()
             for verified_skill in verified_skills
         ):
 
+            verified_projects = [
+                project
+                for project in student.get("projects", [])
+                if project.get("status") == "Verified"
+            ]
+
             matching_students.append(
                 {
-                    "id": student["id"],
+                    "student_id": student["id"],
                     "name": student["name"],
                     "email": student["email"],
                     "college": student["college"],
                     "verified_skills": student["verified_skills"],
-                    "projects": [
-                        project
-                        for project in student["projects"]
-                        if project["status"] == "Verified"
-                    ],
+                    "industry_readiness": calculate_progress(student),
+                    "projects": verified_projects,
                 }
             )
 

@@ -846,6 +846,16 @@ def student_profile(student_id: int):
         "email": student["email"], "verified_skills": get_verified_skills(student_id),
         "strike_count": strikes, "trust_status": calculate_trust_status(strikes)
     }
+@app.post("/api/admin/reset-demo")
+def reset_demo_database():
+    import os
+    if os.path.exists(DB_NAME):
+        try:
+            os.remove(DB_NAME)
+        except Exception as e:
+            pass
+    init_db()
+    return {"success": True, "message": "Demo database reset to factory state."}
 
 if __name__ == "__main__":
     import uvicorn

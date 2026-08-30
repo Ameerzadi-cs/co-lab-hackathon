@@ -1,5 +1,6 @@
 # ============================================================
 # Co-Lab - Multi-Skill FastAPI Backend
+# Dynamic Adaptive Skill-Gap & Sequential Gating Engine
 # Supports: Python | Java | C++ | SQL
 # ============================================================
 
@@ -18,7 +19,7 @@ from datetime import datetime
 app = FastAPI(
     title="Co-Lab API",
     description="Verified Skills & Dynamic Project Matching Platform",
-    version="2.0.0"
+    version="2.1.0"
 )
 
 app.add_middleware(
@@ -100,13 +101,15 @@ def init_db():
         )
     """)
 
-    # 5. MODULE PROGRESS
+    # 5. DYNAMIC ASSIGNED MODULE PROGRESS
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS module_progress (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             student_id INTEGER,
             skill TEXT,
             module_number INTEGER,
+            title TEXT,
+            description TEXT,
             completed INTEGER DEFAULT 0,
             completed_at TEXT,
             UNIQUE(student_id, skill, module_number),
@@ -151,33 +154,224 @@ init_db()
 
 
 # ============================================================
-# CONSTANTS & SKILL MAPPING
+# CONSTANTS & TOPIC-TAGGED QUESTION BANK
 # ============================================================
 
 SKILLS = ["Python", "Java", "C++", "SQL"]
 
+QUESTIONS = {
+    "Python": [
+        {
+            "id": 1,
+            "topic": "Python Data Structures",
+            "desc": "Mastering lists, tuples, dictionaries, and hash maps.",
+            "question": "Which Python data structure stores key-value pairs?",
+            "options": ["List", "Tuple", "Dictionary", "Set"],
+            "answer": "Dictionary"
+        },
+        {
+            "id": 2,
+            "topic": "Functions & Scope",
+            "desc": "Defining reusable functions, arguments, and variable scope.",
+            "question": "Which keyword is used to define a function in Python?",
+            "options": ["function", "def", "func", "define"],
+            "answer": "def"
+        },
+        {
+            "id": 3,
+            "topic": "Sequence Operations & Indexing",
+            "desc": "Built-in sequence methods, slicing, and length operations.",
+            "question": "What is the output of len([10, 20, 30])?",
+            "options": ["2", "3", "4", "30"],
+            "answer": "3"
+        },
+        {
+            "id": 4,
+            "topic": "Memory & Immutability",
+            "desc": "Understanding immutable objects, tuples, and memory references.",
+            "question": "Which Python type is immutable?",
+            "options": ["List", "Dictionary", "Set", "Tuple"],
+            "answer": "Tuple"
+        },
+        {
+            "id": 5,
+            "topic": "Exception Handling",
+            "desc": "Handling runtime errors using try-except blocks and defensive logic.",
+            "question": "Which keyword is used to handle exceptions in Python?",
+            "options": ["catch", "try", "error", "exceptonly"],
+            "answer": "try"
+        }
+    ],
+    "Java": [
+        {
+            "id": 1,
+            "topic": "Java Syntax & Classes",
+            "desc": "Defining class structures and package organization.",
+            "question": "Which keyword is used to create a class in Java?",
+            "options": ["class", "struct", "define", "object"],
+            "answer": "class"
+        },
+        {
+            "id": 2,
+            "topic": "JVM Entry Point & Execution",
+            "desc": "The main method signature and Java execution lifecycle.",
+            "question": "Which method is the entry point of a Java application?",
+            "options": ["start()", "run()", "main()", "execute()"],
+            "answer": "main()"
+        },
+        {
+            "id": 3,
+            "topic": "Inheritance & Class Hierarchy",
+            "desc": "Extending base classes and superclass method overriding.",
+            "question": "Which concept allows one class to acquire properties of another class?",
+            "options": ["Encapsulation", "Inheritance", "Abstraction", "Compilation"],
+            "answer": "Inheritance"
+        },
+        {
+            "id": 4,
+            "topic": "Constants & Access Modifiers",
+            "desc": "Final variables, static members, and visibility boundaries.",
+            "question": "Which keyword prevents a Java variable from being reassigned?",
+            "options": ["static", "constant", "final", "fixed"],
+            "answer": "final"
+        },
+        {
+            "id": 5,
+            "topic": "Java Collections Framework",
+            "desc": "Selecting between Set, List, and Map for unique element constraints.",
+            "question": "Which collection does not allow duplicate elements?",
+            "options": ["List", "Set", "ArrayList", "Vector"],
+            "answer": "Set"
+        }
+    ],
+    "C++": [
+        {
+            "id": 1,
+            "topic": "Pointers & Memory Addresses",
+            "desc": "Dereferencing pointers and raw memory management.",
+            "question": "Which symbol is used to declare a pointer in C++?",
+            "options": ["&", "*", "#", "%"],
+            "answer": "*"
+        },
+        {
+            "id": 2,
+            "topic": "Polymorphism & Function Overloading",
+            "desc": "Function signatures and compile-time polymorphism.",
+            "question": "Which feature allows the same function name with different parameters?",
+            "options": ["Inheritance", "Overloading", "Encapsulation", "Compilation"],
+            "answer": "Overloading"
+        },
+        {
+            "id": 3,
+            "topic": "Standard I/O Streams",
+            "desc": "Using iostream, cin, cout, and formatting buffers.",
+            "question": "Which header is commonly used for input and output with cin and cout?",
+            "options": ["stdio.h", "iostream", "string.h", "stdlib.h"],
+            "answer": "iostream"
+        },
+        {
+            "id": 4,
+            "topic": "Dynamic Heap Allocation",
+            "desc": "Allocating and freeing dynamic heap memory with new and delete.",
+            "question": "Which keyword is used to allocate memory dynamically in C++?",
+            "options": ["malloc", "alloc", "new", "create"],
+            "answer": "new"
+        },
+        {
+            "id": 5,
+            "topic": "Data Abstraction & Encapsulation",
+            "desc": "Hiding implementation details behind public class interfaces.",
+            "question": "Which OOP concept hides internal implementation details?",
+            "options": ["Inheritance", "Polymorphism", "Abstraction", "Iteration"],
+            "answer": "Abstraction"
+        }
+    ],
+    "SQL": [
+        {
+            "id": 1,
+            "topic": "Data Query Language (DQL)",
+            "desc": "Formulating projection queries and selecting records.",
+            "question": "Which SQL command is used to retrieve data from a table?",
+            "options": ["GET", "SELECT", "FETCH", "READ"],
+            "answer": "SELECT"
+        },
+        {
+            "id": 2,
+            "topic": "Predicate Filtering (WHERE)",
+            "desc": "Filtering rows using boolean predicates and pattern operators.",
+            "question": "Which SQL clause is used to filter rows?",
+            "options": ["ORDER BY", "GROUP BY", "WHERE", "HAVING"],
+            "answer": "WHERE"
+        },
+        {
+            "id": 3,
+            "topic": "Relational Keys & Constraints",
+            "desc": "Primary keys, candidate keys, and referential integrity.",
+            "question": "Which key uniquely identifies a row in a relational table?",
+            "options": ["Foreign Key", "Primary Key", "Candidate Group", "Index Key"],
+            "answer": "Primary Key"
+        },
+        {
+            "id": 4,
+            "topic": "Table Joins & Relationships",
+            "desc": "INNER and OUTER joins between relational tables.",
+            "question": "Which SQL operation combines rows from related tables?",
+            "options": ["MERGE", "CONNECT", "JOIN", "UNION ONLY"],
+            "answer": "JOIN"
+        },
+        {
+            "id": 5,
+            "topic": "Result Ordering & Sorting",
+            "desc": "Sorting query recordsets with ascending and descending rules.",
+            "question": "Which clause is used to sort query results?",
+            "options": ["SORT BY", "ORDER BY", "ARRANGE BY", "GROUP BY"],
+            "answer": "ORDER BY"
+        }
+    ]
+}
+
+PROJECT_TEMPLATES = {
+    "Python": {
+        "title": "Python Student Management System",
+        "description": "A Python application for managing student records using CRUD operations, file handling and Python data structures."
+    },
+    "Java": {
+        "title": "Java Banking Management System",
+        "description": "A Java application for managing customer accounts, transactions and banking operations using OOP principles."
+    },
+    "C++": {
+        "title": "C++ Library Management System",
+        "description": "A C++ application for managing books, members and lending operations using object-oriented programming and file handling."
+    },
+    "SQL": {
+        "title": "SQL Employee Database Management System",
+        "description": "A relational database project for managing employees, departments, salaries and transactions using SQL queries, joins, constraints and aggregation."
+    }
+}
+
+MENTORS = [
+    {"id": 1, "name": "Dr. Alan Thomas", "skills": ["Python", "Java"], "role": "Senior Software Engineering Mentor"},
+    {"id": 2, "name": "Prof. Meera Nair", "skills": ["SQL"], "role": "Database & SQL Mentor"},
+    {"id": 3, "name": "Dr. Rahul Menon", "skills": ["C++"], "role": "Systems & C++ Mentor"}
+]
+
+
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
 
 def normalize_skill(skill: str) -> str:
     if not skill:
         return ""
     skill = skill.strip().lower()
-    mapping = {
-        "python": "Python",
-        "java": "Java",
-        "c++": "C++",
-        "cpp": "C++",
-        "sql": "SQL"
-    }
+    mapping = {"python": "Python", "java": "Java", "c++": "C++", "cpp": "C++", "sql": "SQL"}
     return mapping.get(skill, skill)
 
 
 def validate_skill(skill: str):
     skill = normalize_skill(skill)
     if skill not in SKILLS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported skill. Choose one of: {', '.join(SKILLS)}"
-        )
+        raise HTTPException(status_code=400, detail=f"Unsupported skill. Choose one of: {', '.join(SKILLS)}")
     return skill
 
 
@@ -190,74 +384,35 @@ def calculate_trust_status(strike_count: int) -> str:
         return "Review Required"
 
 
-# ============================================================
-# QUESTION BANK
-# ============================================================
-
-QUESTIONS = {
-    "Python": [
-        {"id": 1, "question": "Which Python data structure stores key-value pairs?", "options": ["List", "Tuple", "Dictionary", "Set"], "answer": "Dictionary"},
-        {"id": 2, "question": "Which keyword is used to define a function in Python?", "options": ["function", "def", "func", "define"], "answer": "def"},
-        {"id": 3, "question": "What is the output of len([10, 20, 30])?", "options": ["2", "3", "4", "30"], "answer": "3"},
-        {"id": 4, "question": "Which Python type is immutable?", "options": ["List", "Dictionary", "Set", "Tuple"], "answer": "Tuple"},
-        {"id": 5, "question": "Which keyword is used to handle exceptions in Python?", "options": ["catch", "try", "error", "exceptonly"], "answer": "try"}
-    ],
-    "Java": [
-        {"id": 1, "question": "Which keyword is used to create a class in Java?", "options": ["class", "struct", "define", "object"], "answer": "class"},
-        {"id": 2, "question": "Which method is the entry point of a Java application?", "options": ["start()", "run()", "main()", "execute()"], "answer": "main()"},
-        {"id": 3, "question": "Which concept allows one class to acquire properties of another class?", "options": ["Encapsulation", "Inheritance", "Abstraction", "Compilation"], "answer": "Inheritance"},
-        {"id": 4, "question": "Which keyword prevents a Java variable from being reassigned?", "options": ["static", "constant", "final", "fixed"], "answer": "final"},
-        {"id": 5, "question": "Which collection does not allow duplicate elements?", "options": ["List", "Set", "ArrayList", "Vector"], "answer": "Set"}
-    ],
-    "C++": [
-        {"id": 1, "question": "Which symbol is used to declare a pointer in C++?", "options": ["&", "*", "#", "%"], "answer": "*"},
-        {"id": 2, "question": "Which feature allows the same function name with different parameters?", "options": ["Inheritance", "Overloading", "Encapsulation", "Compilation"], "answer": "Overloading"},
-        {"id": 3, "question": "Which header is commonly used for input and output with cin and cout?", "options": ["stdio.h", "iostream", "string.h", "stdlib.h"], "answer": "iostream"},
-        {"id": 4, "question": "Which keyword is used to allocate memory dynamically in C++?", "options": ["malloc", "alloc", "new", "create"], "answer": "new"},
-        {"id": 5, "question": "Which OOP concept hides internal implementation details?", "options": ["Inheritance", "Polymorphism", "Abstraction", "Iteration"], "answer": "Abstraction"}
-    ],
-    "SQL": [
-        {"id": 1, "question": "Which SQL command is used to retrieve data from a table?", "options": ["GET", "SELECT", "FETCH", "READ"], "answer": "SELECT"},
-        {"id": 2, "question": "Which SQL clause is used to filter rows?", "options": ["ORDER BY", "GROUP BY", "WHERE", "HAVING"], "answer": "WHERE"},
-        {"id": 3, "question": "Which key uniquely identifies a row in a relational table?", "options": ["Foreign Key", "Primary Key", "Candidate Group", "Index Key"], "answer": "Primary Key"},
-        {"id": 4, "question": "Which SQL operation combines rows from related tables?", "options": ["MERGE", "CONNECT", "JOIN", "UNION ONLY"], "answer": "JOIN"},
-        {"id": 5, "question": "Which clause is used to sort query results?", "options": ["SORT BY", "ORDER BY", "ARRANGE BY", "GROUP BY"], "answer": "ORDER BY"}
-    ]
-}
+def get_student(student_id: int):
+    conn = get_db()
+    student = conn.execute("SELECT * FROM students WHERE id = ?", (student_id,)).fetchone()
+    conn.close()
+    return student
 
 
-# ============================================================
-# PROJECT TEMPLATES & MENTORS
-# ============================================================
+def get_verified_skills(student_id: int):
+    conn = get_db()
+    rows = conn.execute("SELECT skill FROM verified_skills WHERE student_id = ?", (student_id,)).fetchall()
+    conn.close()
+    return [row["skill"] for row in rows]
 
-PROJECT_TEMPLATES = {
-    "Python": {
-        "title": "Python Student Management System",
-        "description": "A Python application for managing student records using CRUD operations, file handling and Python data structures.",
-        "modules": ["Python Data Structures", "File Handling", "Functions & Exception Handling", "CRUD Operations"]
-    },
-    "Java": {
-        "title": "Java Banking Management System",
-        "description": "A Java application for managing customer accounts, transactions and banking operations using OOP principles.",
-        "modules": ["Java OOP Fundamentals", "Collections & Exception Handling", "Inheritance & Polymorphism", "Build a Java Project"]
-    },
-    "C++": {
-        "title": "C++ Library Management System",
-        "description": "A C++ application for managing books, members and lending operations using object-oriented programming and file handling.",
-        "modules": ["C++ OOP Fundamentals", "Pointers & Memory", "STL & Data Structures", "Build a C++ Project"]
-    },
-    "SQL": {
-        "title": "SQL Employee Database Management System",
-        "description": "A relational database project for managing employees, departments, salaries and transactions using SQL queries, joins, constraints and aggregation.",
-        "modules": ["SQL Queries & Filtering", "Joins & Relationships", "Aggregation & Subqueries", "Build a SQL Database Project"]
-    }
-}
 
-MENTORS = [
-    {"id": 1, "name": "Dr. Alan Thomas", "skills": ["Python", "Java"], "role": "Senior Software Engineering Mentor"},
-    {"id": 2, "name": "Prof. Meera Nair", "skills": ["SQL"], "role": "Database & SQL Mentor"},
-    {"id": 3, "name": "Dr. Rahul Menon", "skills": ["C++"], "role": "Systems & C++ Mentor"}
-]
+def get_strike_count(student_id: int):
+    conn = get_db()
+    row = conn.execute("SELECT COUNT(*) AS count FROM strikes WHERE student_id = ?", (student_id,)).fetchone()
+    conn.close()
+    return row["count"]
+
+
+def add_strike(student_id: int, skill: str, reason: str, mentor_name: str = "System"):
+    conn = get_db()
+    conn.execute("""
+        INSERT INTO strikes (student_id, skill, reason, mentor_name, created_at)
+        VALUES (?, ?, ?, ?, ?)
+    """, (student_id, skill, reason, mentor_name, datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
 
 
 # ============================================================
@@ -284,44 +439,12 @@ class StrikeSubmission(BaseModel):
 
 
 # ============================================================
-# UTILITY FUNCTIONS
-# ============================================================
-
-def get_student(student_id: int):
-    conn = get_db()
-    student = conn.execute("SELECT * FROM students WHERE id = ?", (student_id,)).fetchone()
-    conn.close()
-    return student
-
-def get_verified_skills(student_id: int):
-    conn = get_db()
-    rows = conn.execute("SELECT skill FROM verified_skills WHERE student_id = ?", (student_id,)).fetchall()
-    conn.close()
-    return [row["skill"] for row in rows]
-
-def get_strike_count(student_id: int):
-    conn = get_db()
-    row = conn.execute("SELECT COUNT(*) AS count FROM strikes WHERE student_id = ?", (student_id,)).fetchone()
-    conn.close()
-    return row["count"]
-
-def add_strike(student_id: int, skill: str, reason: str, mentor_name: str = "System"):
-    conn = get_db()
-    conn.execute("""
-        INSERT INTO strikes (student_id, skill, reason, mentor_name, created_at)
-        VALUES (?, ?, ?, ?, ?)
-    """, (student_id, skill, reason, mentor_name, datetime.now().isoformat()))
-    conn.commit()
-    conn.close()
-
-
-# ============================================================
 # API ENDPOINTS
 # ============================================================
 
 @app.get("/")
 def root():
-    return {"platform": "Co-Lab", "message": "Verified Skills API", "version": "2.0", "supported_skills": SKILLS}
+    return {"platform": "Co-Lab", "message": "Adaptive Skill-Gap Engine API", "version": "2.1", "supported_skills": SKILLS}
 
 @app.get("/health")
 def health():
@@ -331,18 +454,17 @@ def health():
 def get_skills():
     return {"skills": SKILLS}
 
-@app.get("/api/skill/{skill}/template")
-def get_skill_template(skill: str):
-    skill = validate_skill(skill)
-    template = PROJECT_TEMPLATES[skill]
-    return {"skill": skill, "title": template["title"], "description": template["description"], "modules": template["modules"]}
-
 @app.get("/api/assessment/questions")
 def get_assessment_questions(skill: str = "Python"):
     skill = validate_skill(skill)
     questions = QUESTIONS[skill]
     safe_questions = [{"id": q["id"], "question": q["question"], "options": q["options"]} for q in questions]
     return {"skill": skill, "total": len(safe_questions), "questions": safe_questions}
+
+
+# ============================================================
+# ADAPTIVE ASSESSMENT SUBMISSION (Generates Tailored Modules)
+# ============================================================
 
 @app.post("/api/assessment/submit")
 def submit_assessment(payload: AssessmentSubmission):
@@ -352,28 +474,55 @@ def submit_assessment(payload: AssessmentSubmission):
         raise HTTPException(status_code=404, detail="Student not found")
 
     questions = QUESTIONS[skill]
-    score = sum(1 for q in questions if payload.answers.get(str(q["id"])) == q["answer"])
+    score = 0
+    assigned_modules = []
+
+    # Identify individual question failures and map to specific remedial modules
+    for q in questions:
+        student_ans = payload.answers.get(str(q["id"]))
+        if student_ans == q["answer"]:
+            score += 1
+        else:
+            assigned_modules.append({
+                "module_number": len(assigned_modules) + 1,
+                "title": f"Remedial: {q['topic']}",
+                "description": f"Targeted skill-gap remediation for: {q['desc']}"
+            })
+
     total = len(questions)
     percentage = round((score / total) * 100)
-    skill_gap = score < 4
+    skill_gap = score < total
 
-    if score == total:
-        result, message = "Excellent", f"Outstanding {skill} performance."
-    elif score >= 4:
-        result, message = "Strong", f"Good {skill} foundation."
-    elif score >= 3:
-        result, message = "Needs Improvement", f"Some {skill} fundamentals need improvement."
-    else:
-        result, message = "Skill Gap Detected", f"Significant {skill} skill gap detected."
+    # If student got 100% (5/5), assign a fast-track project readiness module
+    if not assigned_modules:
+        assigned_modules.append({
+            "module_number": 1,
+            "title": f"Advanced {skill} Architecture & Design Patterns",
+            "description": f"Exemption granted: You demonstrated complete {skill} mastery. Review architectural standards before building."
+        })
 
+    now = datetime.now().isoformat()
     conn = get_db()
+
+    # Save assessment log
     conn.execute("""
         INSERT INTO assessments (student_id, skill, score, total, completed_at)
         VALUES (?, ?, ?, ?, ?)
-    """, (payload.student_id, skill, score, total, datetime.now().isoformat()))
+    """, (payload.student_id, skill, score, total, now))
+
+    # Overwrite student's assigned modules for this specific skill with their new personalized modules
+    conn.execute("DELETE FROM module_progress WHERE student_id = ? AND LOWER(skill) = LOWER(?)", (payload.student_id, skill))
+
+    for mod in assigned_modules:
+        conn.execute("""
+            INSERT INTO module_progress (student_id, skill, module_number, title, description, completed, completed_at)
+            VALUES (?, ?, ?, ?, ?, 0, NULL)
+        """, (payload.student_id, skill, mod["module_number"], mod["title"], mod["description"]))
+
     conn.commit()
     conn.close()
 
+    # Penalty Strike for failing below 40%
     if percentage < 40:
         if get_strike_count(payload.student_id) < 3:
             add_strike(payload.student_id, skill, "Assessment score below 40%", "Academic Assessment System")
@@ -386,10 +535,92 @@ def submit_assessment(payload: AssessmentSubmission):
         "total": total,
         "percentage": percentage,
         "skill_gap": skill_gap,
-        "result": result,
-        "message": message,
+        "assigned_modules_count": len(assigned_modules),
+        "result": "Strong" if score >= 4 else "Needs Remediation" if score >= 3 else "Skill Gap Detected",
+        "message": f"Generated {len(assigned_modules)} personalized remedial module(s) based on your diagnostic results.",
         "strikes": get_strike_count(payload.student_id)
     }
+
+
+# ============================================================
+# DYNAMIC MODULE STATUS & PROGRESSION
+# ============================================================
+
+@app.get("/api/student/modules")
+def get_modules(student_id: int, skill: str):
+    skill = validate_skill(skill)
+    student = get_student(student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    conn = get_db()
+    rows = conn.execute("""
+        SELECT module_number, title, description, completed 
+        FROM module_progress 
+        WHERE student_id = ? AND LOWER(skill) = LOWER(?)
+        ORDER BY module_number ASC
+    """, (student_id, skill)).fetchall()
+    conn.close()
+
+    modules = [
+        {
+            "module_number": r["module_number"],
+            "title": r["title"],
+            "description": r["description"],
+            "completed": bool(r["completed"])
+        }
+        for r in rows
+    ]
+
+    completed_count = sum(1 for m in modules if m["completed"])
+    total = len(modules)
+    percent = round((completed_count / total) * 100) if total > 0 else 0
+
+    return {
+        "student_id": student_id,
+        "skill": skill,
+        "has_assessment": total > 0,
+        "modules": modules,
+        "completed": completed_count,
+        "total": total,
+        "percentage": percent
+    }
+
+
+@app.post("/api/student/module/{module_number}/complete")
+def complete_module(module_number: int, student_id: int, skill: str):
+    skill = validate_skill(skill)
+    student = get_student(student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    conn = get_db()
+
+    # Verify that the previous module was completed first (Sequential Gate)
+    if module_number > 1:
+        prev = conn.execute("""
+            SELECT completed FROM module_progress 
+            WHERE student_id = ? AND LOWER(skill) = LOWER(?) AND module_number = ?
+        """, (student_id, skill, module_number - 1)).fetchone()
+        if not prev or prev["completed"] != 1:
+            conn.close()
+            raise HTTPException(status_code=400, detail=f"Sequential prerequisite error: Complete Module {module_number - 1} first.")
+
+    now = datetime.now().isoformat()
+    conn.execute("""
+        UPDATE module_progress 
+        SET completed = 1, completed_at = ? 
+        WHERE student_id = ? AND LOWER(skill) = LOWER(?) AND module_number = ?
+    """, (now, student_id, skill, module_number))
+
+    conn.commit()
+    conn.close()
+    return {"success": True, "student_id": student_id, "skill": skill, "module_number": module_number}
+
+
+# ============================================================
+# PROJECT SUBMISSION (Enforces 100% Module Completion Gating)
+# ============================================================
 
 @app.post("/api/student/project")
 def submit_project(payload: ProjectSubmission):
@@ -397,11 +628,33 @@ def submit_project(payload: ProjectSubmission):
     student = get_student(payload.student_id)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
+
     if not payload.title.strip() or not payload.description.strip() or not payload.github_url.strip():
         raise HTTPException(status_code=400, detail="All project fields are required.")
 
-    now = datetime.now().isoformat()
     conn = get_db()
+
+    # Check 1: Assessment Must Be Completed
+    assessment = conn.execute("""
+        SELECT * FROM assessments WHERE student_id = ? AND LOWER(skill) = LOWER(?)
+    """, (payload.student_id, skill)).fetchone()
+    if not assessment:
+        conn.close()
+        raise HTTPException(status_code=400, detail=f"Prerequisite locked: Take the {skill} assessment before submitting a project.")
+
+    # Check 2: All Tailored Modules Must Be Completed
+    rows = conn.execute("""
+        SELECT completed FROM module_progress WHERE student_id = ? AND LOWER(skill) = LOWER(?)
+    """, (payload.student_id, skill)).fetchall()
+
+    if not rows or any(r["completed"] != 1 for r in rows):
+        conn.close()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Prerequisite locked: You must finish all assigned skill-gap learning modules before submitting your {skill} project."
+        )
+
+    now = datetime.now().isoformat()
     cursor = conn.execute("""
         INSERT INTO projects (student_id, skill, title, description, repo, status, submitted_at)
         VALUES (?, ?, ?, ?, ?, 'Pending', ?)
@@ -419,6 +672,11 @@ def submit_project(payload: ProjectSubmission):
             "repo": payload.github_url.strip(), "status": "Pending", "submitted_at": now
         }
     }
+
+
+# ============================================================
+# MENTOR VERIFICATION & QUALIFICATION
+# ============================================================
 
 @app.get("/api/mentors")
 def get_mentors():
@@ -477,48 +735,44 @@ def approve_project(project_id: int, mentor_name: str = "Dr. Alan Thomas"):
         "mentor": mentor["name"], "project": {"id": project_id, "status": "Verified", "skill": skill, "verified_by": mentor["name"], "verified_at": now}
     }
 
-@app.get("/api/student/modules")
-def get_modules(student_id: int, skill: str):
+
+# ============================================================
+# READINESS, PORTFOLIO & RECRUITER SEARCH
+# ============================================================
+
+@app.get("/api/student/readiness")
+def student_readiness(student_id: int, skill: str):
     skill = validate_skill(skill)
-    template = PROJECT_TEMPLATES[skill]
     conn = get_db()
-    completed_rows = conn.execute("SELECT module_number FROM module_progress WHERE student_id = ? AND skill = ? AND completed = 1", (student_id, skill)).fetchall()
+    assessment = conn.execute("SELECT * FROM assessments WHERE student_id = ? AND LOWER(skill) = LOWER(?) ORDER BY id DESC LIMIT 1", (student_id, skill)).fetchone()
+    mod_rows = conn.execute("SELECT completed FROM module_progress WHERE student_id = ? AND LOWER(skill) = LOWER(?)", (student_id, skill)).fetchall()
+    project = conn.execute("SELECT * FROM projects WHERE student_id = ? AND LOWER(skill) = LOWER(?) ORDER BY id DESC LIMIT 1", (student_id, skill)).fetchone()
+    verified = conn.execute("SELECT * FROM verified_skills WHERE student_id = ? AND LOWER(skill) = LOWER(?)", (student_id, skill)).fetchone()
     conn.close()
 
-    completed_numbers = {row["module_number"] for row in completed_rows}
-    modules = [{"module_number": i, "title": name, "completed": i in completed_numbers} for i, name in enumerate(template["modules"], start=1)]
-    completed_count = len(completed_numbers)
+    total_mods = len(mod_rows)
+    completed_mods = sum(1 for r in mod_rows if r["completed"] == 1)
+    learning_done = total_mods > 0 and (completed_mods == total_mods)
+
+    readiness = 0
+    if assessment: readiness += 25
+    if total_mods > 0: readiness += (completed_mods / total_mods * 25)
+    if project: readiness += 25
+    if verified: readiness += 25
+    readiness = min(100, round(readiness))
 
     return {
-        "student_id": student_id, "skill": skill, "modules": modules,
-        "completed": completed_count, "total": len(modules),
-        "percentage": round((completed_count / len(modules)) * 100) if modules else 0
+        "student_id": student_id, "skill": skill, "readiness": readiness,
+        "assessment_completed": assessment is not None,
+        "has_assigned_modules": total_mods > 0,
+        "learning_completed": learning_done,
+        "learning_percentage": round((completed_mods / total_mods) * 100) if total_mods > 0 else 0,
+        "project_submitted": project is not None,
+        "project_unlocked": learning_done,
+        "project_verified": verified is not None,
+        "verified_skill": verified is not None,
+        "status": "Industry Ready" if readiness == 100 else "In Progress"
     }
-
-@app.post("/api/student/module/{module_number}/complete")
-def complete_module(module_number: int, student_id: int, skill: str):
-    skill = validate_skill(skill)
-    template = PROJECT_TEMPLATES[skill]
-    if module_number < 1 or module_number > len(template["modules"]):
-        raise HTTPException(status_code=400, detail="Invalid module number")
-
-    if module_number > 1:
-        conn = get_db()
-        prev = conn.execute("SELECT completed FROM module_progress WHERE student_id = ? AND skill = ? AND module_number = ?", (student_id, skill, module_number - 1)).fetchone()
-        conn.close()
-        if not prev or prev["completed"] != 1:
-            raise HTTPException(status_code=400, detail=f"Complete Module {module_number - 1} first.")
-
-    now = datetime.now().isoformat()
-    conn = get_db()
-    conn.execute("""
-        INSERT INTO module_progress (student_id, skill, module_number, completed, completed_at)
-        VALUES (?, ?, ?, 1, ?)
-        ON CONFLICT(student_id, skill, module_number) DO UPDATE SET completed = 1, completed_at = excluded.completed_at
-    """, (student_id, skill, module_number, now))
-    conn.commit()
-    conn.close()
-    return {"success": True, "student_id": student_id, "skill": skill, "module_number": module_number}
 
 @app.get("/api/students/portfolio")
 def get_portfolio():
@@ -564,31 +818,6 @@ def recruiter_search(skill: str):
         })
     conn.close()
     return {"skill": skill, "count": len(candidates), "students": candidates}
-
-@app.get("/api/student/readiness")
-def student_readiness(student_id: int, skill: str):
-    skill = validate_skill(skill)
-    conn = get_db()
-    assessment = conn.execute("SELECT * FROM assessments WHERE student_id = ? AND LOWER(skill) = LOWER(?) ORDER BY id DESC LIMIT 1", (student_id, skill)).fetchone()
-    mod_count = conn.execute("SELECT COUNT(*) AS c FROM module_progress WHERE student_id = ? AND LOWER(skill) = LOWER(?) AND completed = 1", (student_id, skill)).fetchone()["c"]
-    total_mods = len(PROJECT_TEMPLATES[skill]["modules"])
-    project = conn.execute("SELECT * FROM projects WHERE student_id = ? AND LOWER(skill) = LOWER(?) ORDER BY id DESC LIMIT 1", (student_id, skill)).fetchone()
-    verified = conn.execute("SELECT * FROM verified_skills WHERE student_id = ? AND LOWER(skill) = LOWER(?)", (student_id, skill)).fetchone()
-    conn.close()
-
-    readiness = 0
-    if assessment: readiness += 25
-    if total_mods > 0: readiness += (mod_count / total_mods * 25)
-    if project: readiness += 25
-    if verified: readiness += 25
-    readiness = min(100, round(readiness))
-
-    return {
-        "student_id": student_id, "skill": skill, "readiness": readiness,
-        "assessment_completed": assessment is not None, "learning_completed": mod_count == total_mods,
-        "project_submitted": project is not None, "project_verified": verified is not None,
-        "verified_skill": verified is not None, "status": "Industry Ready" if readiness == 100 else "In Progress"
-    }
 
 @app.get("/api/student/strikes")
 def get_strikes(student_id: int):

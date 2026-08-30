@@ -9,1592 +9,430 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background: #030712;
-        }
-
-        .option-card {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .option-card:hover {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.08);
-        }
-
-        .option-card.selected {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.15);
-        }
-
-        .progress-bar {
-            transition: width 0.5s ease;
-        }
-
-        .skill-card {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .skill-card:hover {
-            transform: translateY(-2px);
-            border-color: #6366f1;
-        }
-
-        .skill-card.selected {
-            border-color: #6366f1;
-            background: rgba(99, 102, 241, 0.15);
-            box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4);
-        }
+        html { scroll-behavior: smooth; }
+        body { background: #030712; }
+        .option-card { transition: all 0.2s ease; cursor: pointer; }
+        .option-card:hover { border-color: #6366f1; background: rgba(99, 102, 241, 0.08); }
+        .option-card.selected { border-color: #6366f1; background: rgba(99, 102, 241, 0.15); }
+        .progress-bar { transition: width 0.5s ease; }
+        .skill-card { transition: all 0.2s ease; cursor: pointer; }
+        .skill-card:hover { transform: translateY(-2px); border-color: #6366f1; }
+        .skill-card.selected { border-color: #6366f1; background: rgba(99, 102, 241, 0.15); box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4); }
     </style>
 </head>
 
 <body class="bg-gray-950 text-gray-100 min-h-screen font-sans">
 
-<!-- ========================================================= -->
 <!-- HEADER -->
-<!-- ========================================================= -->
-
 <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
-
     <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
-
         <div class="flex items-center gap-3">
-
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-xl">
-                C
-            </div>
-
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-xl">C</div>
             <div>
-                <h1 class="text-xl font-bold text-white">
-                    Co-Lab
-                    <span class="text-xs px-2 py-1 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                        Platform
-                    </span>
-                </h1>
-
-                <p class="text-xs text-gray-400">
-                    Verified Skills & Dynamic Project Matching
-                </p>
+                <h1 class="text-xl font-bold text-white">Co-Lab <span class="text-xs px-2 py-1 rounded bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">Platform</span></h1>
+                <p class="text-xs text-gray-400">Verified Skills & Dynamic Project Matching</p>
             </div>
-
         </div>
-
-
-        <!-- VIEW SWITCHER -->
-
         <div class="flex bg-gray-950 p-1 rounded-xl border border-gray-800">
-
-            <button
-                onclick="switchTab('student')"
-                id="tab-student"
-                class="px-5 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white">
-                Student View
-            </button>
-
-            <button
-                onclick="switchTab('mentor')"
-                id="tab-mentor"
-                class="px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white">
-                Mentor View
-            </button>
-
-            <button
-                onclick="switchTab('recruiter')"
-                id="tab-recruiter"
-                class="px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white">
-                Recruiter View
-            </button>
-
+            <button onclick="switchTab('student')" id="tab-student" class="px-5 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white">Student View</button>
+            <button onclick="switchTab('mentor')" id="tab-mentor" class="px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white">Mentor View</button>
+            <button onclick="switchTab('recruiter')" id="tab-recruiter" class="px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white">Recruiter View</button>
         </div>
-
     </div>
-
 </header>
 
-
-<!-- ========================================================= -->
-<!-- NOTIFICATION -->
-<!-- ========================================================= -->
-
 <div id="notification" class="hidden max-w-7xl mx-auto px-6 pt-5">
-
     <div id="notification-content" class="rounded-xl px-5 py-4 border text-sm"></div>
-
 </div>
-
 
 <main class="max-w-7xl mx-auto px-6 py-8">
 
-
-<!-- ========================================================= -->
 <!-- STUDENT VIEW -->
-<!-- ========================================================= -->
-
 <section id="view-student" class="space-y-8">
-
-
-<!-- ========================================================= -->
-<!-- HERO -->
-<!-- ========================================================= -->
-
-<div class="bg-gradient-to-r from-indigo-950 via-gray-900 to-purple-950 border border-indigo-500/30 rounded-3xl p-8">
-
-    <div class="flex flex-col lg:flex-row justify-between gap-6">
-
-        <div>
-
-            <span class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
-
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-
-                Profile Active: Ananya Rao (Student #4)
-
-            </span>
-
-
-            <h2 class="text-4xl font-black text-white mt-5">
-                Your Skill Journey
-            </h2>
-
-
-            <p class="text-gray-400 mt-2">
-                Assess → Identify Gaps → Learn → Build → Get Verified → Get Discovered
-            </p>
-
-
-            <p id="motivation-message" class="text-indigo-300 mt-4 font-semibold">
-                🚀 Select a skill to begin your journey.
-            </p>
-
+    <div class="bg-gradient-to-r from-indigo-950 via-gray-900 to-purple-950 border border-indigo-500/30 rounded-3xl p-8">
+        <div class="flex flex-col lg:flex-row justify-between gap-6">
+            <div>
+                <span class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Profile Active: Ananya Rao (Student #4)
+                </span>
+                <h2 class="text-4xl font-black text-white mt-5">Your Skill Journey</h2>
+                <p class="text-gray-400 mt-2">Assess → Identify Gaps → Remediate Modules → Build Project → Verify</p>
+                <p id="motivation-message" class="text-indigo-300 mt-4 font-semibold">🚀 Select a skill to begin your journey.</p>
+            </div>
+            <div class="text-center bg-gray-950/60 border border-gray-800 rounded-2xl p-6 min-w-[190px]">
+                <p class="text-xs text-gray-500 uppercase tracking-wider">Industry Readiness</p>
+                <p id="hero-readiness" class="text-5xl font-black text-indigo-400 mt-2">0%</p>
+                <p class="text-xs text-gray-500 mt-2">Sequential Progression</p>
+            </div>
         </div>
-
-
-        <!-- READINESS -->
-
-        <div class="text-center bg-gray-950/60 border border-gray-800 rounded-2xl p-6 min-w-[190px]">
-
-            <p class="text-xs text-gray-500 uppercase tracking-wider">
-                Industry Readiness
-            </p>
-
-            <p id="hero-readiness" class="text-5xl font-black text-indigo-400 mt-2">
-                0%
-            </p>
-
-            <p class="text-xs text-gray-500 mt-2">
-                Keep progressing!
-            </p>
-
-        </div>
-
     </div>
 
-</div>
-
-
-<!-- ========================================================= -->
-<!-- SKILL SELECTION -->
-<!-- ========================================================= -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-6">
-
-        <div>
-
-            <h3 class="text-xl font-bold">
-                🎯 Choose Your Skill
-            </h3>
-
-            <p class="text-xs text-gray-500 mt-1">
-                The assessment, skill-gap analysis, roadmap and project are dynamically generated for your selected skill.
-            </p>
-
+    <!-- SKILL SELECTION -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-6">
+            <div>
+                <h3 class="text-xl font-bold">🎯 Choose Your Skill</h3>
+                <p class="text-xs text-gray-500 mt-1">Diagnostic assessments dynamically adapt your remedial roadmap.</p>
+            </div>
+            <span id="selected-skill-badge" class="px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-700 text-indigo-400 text-xs font-bold">No Skill Selected</span>
         </div>
-
-
-        <span
-            id="selected-skill-badge"
-            class="px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-700 text-indigo-400 text-xs font-bold">
-            No Skill Selected
-        </span>
-
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div onclick="selectSkill('Python')" id="skill-Python" class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
+                <div class="text-4xl">🐍</div><h4 class="font-bold mt-3">Python</h4><p class="text-xs text-gray-500 mt-1">Programming</p>
+            </div>
+            <div onclick="selectSkill('Java')" id="skill-Java" class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
+                <div class="text-4xl">☕</div><h4 class="font-bold mt-3">Java</h4><p class="text-xs text-gray-500 mt-1">Programming</p>
+            </div>
+            <div onclick="selectSkill('C++')" id="skill-C++" class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
+                <div class="text-4xl">⚙️</div><h4 class="font-bold mt-3">C++</h4><p class="text-xs text-gray-500 mt-1">Programming</p>
+            </div>
+            <div onclick="selectSkill('SQL')" id="skill-SQL" class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
+                <div class="text-4xl">🗄️</div><h4 class="font-bold mt-3">SQL</h4><p class="text-xs text-gray-500 mt-1">Database</p>
+            </div>
+        </div>
     </div>
 
+    <!-- JOURNEY CARDS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div id="card-assessment" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+            <div class="text-3xl">📝</div><h3 class="font-bold mt-3">Assessment</h3><p id="status-assessment" class="text-xs text-gray-500 mt-2">Not Started</p>
+        </div>
+        <div id="card-gap" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+            <div class="text-3xl">🧭</div><h3 class="font-bold mt-3">Skill Gap</h3><p id="status-gap" class="text-xs text-gray-500 mt-2">Pending</p>
+        </div>
+        <div id="card-learning" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+            <div class="text-3xl">📚</div><h3 class="font-bold mt-3">Remedial Modules</h3><p id="status-learning" class="text-xs text-gray-500 mt-2">Locked</p>
+        </div>
+        <div id="card-project" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+            <div class="text-3xl">🚀</div><h3 class="font-bold mt-3">Capstone Project</h3><p id="status-project" class="text-xs text-gray-500 mt-2">Locked</p>
+        </div>
+        <div id="card-verification" class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
+            <div class="text-3xl">🏆</div><h3 class="font-bold mt-3">Verification</h3><p id="status-verification" class="text-xs text-gray-500 mt-2">Pending</p>
+        </div>
+    </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <!-- READINESS BAR -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div class="flex justify-between items-center">
+            <div>
+                <h3 class="font-bold text-lg">🚀 Industry Readiness</h3>
+                <p id="readiness-text" class="text-xs text-gray-400 mt-1">Complete your diagnostic assessment to unlock your roadmap.</p>
+            </div>
+            <span id="readiness-number" class="text-2xl font-black text-indigo-400">0%</span>
+        </div>
+        <div class="w-full bg-gray-800 rounded-full h-3 mt-5 overflow-hidden">
+            <div id="readiness-bar" class="progress-bar bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full" style="width:0%"></div>
+        </div>
+    </div>
 
+    <!-- ASSESSMENT + PROJECT CONTAINER -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- ASSESSMENT -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-5">
+                <div>
+                    <h3 id="assessment-title" class="text-xl font-bold flex items-center gap-2">📜 Skill Assessment</h3>
+                    <p id="assessment-description" class="text-xs text-gray-500 mt-1">Select a skill to begin.</p>
+                </div>
+                <button onclick="startAssessment()" id="start-assessment-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold">Start Assessment</button>
+            </div>
+            <div id="quiz-container">
+                <div class="border border-dashed border-gray-700 rounded-xl p-8 text-center">
+                    <div class="text-4xl mb-3">🧠</div><h4 class="font-bold text-white">Diagnostic Testing Ready</h4><p class="text-xs text-gray-500 mt-2">Test your fundamentals to identify exact gaps.</p>
+                </div>
+            </div>
+            <button onclick="submitQuiz()" id="submit-quiz-btn" disabled class="w-full mt-6 py-3 bg-emerald-700/50 text-gray-400 font-bold rounded-xl text-sm cursor-not-allowed">Submit Assessment</button>
+            <div id="assessment-result" class="hidden mt-5"></div>
+        </div>
 
-        <!-- PYTHON -->
-
-        <div
-            onclick="selectSkill('Python')"
-            id="skill-Python"
-            class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
-
-            <div class="text-4xl">
-                🐍
+        <!-- DYNAMIC PROJECT (Gated) -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 relative">
+            <div class="mb-5">
+                <h3 class="text-xl font-bold">🚀 Skill-Based Capstone Project</h3>
+                <p id="project-subtitle" class="text-xs text-gray-500 mt-1">Unlocked only after completing diagnostic learning modules.</p>
+            </div>
+            
+            <div id="project-form-fields" class="space-y-4 opacity-50 pointer-events-none">
+                <div>
+                    <label class="text-xs font-semibold text-gray-400">Project Title</label>
+                    <input id="proj-title" type="text" value="" class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400">Description</label>
+                    <textarea id="proj-desc" rows="4" class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-gray-400">GitHub Repository</label>
+                    <input id="proj-github" type="text" class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
             </div>
 
-            <h4 class="font-bold mt-3">
-                Python
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Programming
-            </p>
-
-        </div>
-
-
-        <!-- JAVA -->
-
-        <div
-            onclick="selectSkill('Java')"
-            id="skill-Java"
-            class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
-
-            <div class="text-4xl">
-                ☕
-            </div>
-
-            <h4 class="font-bold mt-3">
-                Java
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Programming
-            </p>
-
-        </div>
-
-
-        <!-- C++ -->
-
-        <div
-            onclick="selectSkill('C++')"
-            id="skill-C++"
-            class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
-
-            <div class="text-4xl">
-                ⚙️
-            </div>
-
-            <h4 class="font-bold mt-3">
-                C++
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Programming
-            </p>
-
-        </div>
-
-
-        <!-- SQL -->
-
-        <div
-            onclick="selectSkill('SQL')"
-            id="skill-SQL"
-            class="skill-card border border-gray-800 bg-gray-950 rounded-xl p-5 text-center">
-
-            <div class="text-4xl">
-                🗄️
-            </div>
-
-            <h4 class="font-bold mt-3">
-                SQL
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Database
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- JOURNEY CARDS -->
-<!-- ========================================================= -->
-
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-
-
-    <div
-        id="card-assessment"
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
-
-        <div class="text-3xl">
-            📝
-        </div>
-
-        <h3 class="font-bold mt-3">
-            Assessment
-        </h3>
-
-        <p id="status-assessment" class="text-xs text-gray-500 mt-2">
-            Not Started
-        </p>
-
-    </div>
-
-
-    <div
-        id="card-gap"
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
-
-        <div class="text-3xl">
-            🧭
-        </div>
-
-        <h3 class="font-bold mt-3">
-            Skill Gap
-        </h3>
-
-        <p id="status-gap" class="text-xs text-gray-500 mt-2">
-            Pending
-        </p>
-
-    </div>
-
-
-    <div
-        id="card-learning"
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
-
-        <div class="text-3xl">
-            📚
-        </div>
-
-        <h3 class="font-bold mt-3">
-            Learning
-        </h3>
-
-        <p id="status-learning" class="text-xs text-gray-500 mt-2">
-            0% Complete
-        </p>
-
-    </div>
-
-
-    <div
-        id="card-project"
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
-
-        <div class="text-3xl">
-            🚀
-        </div>
-
-        <h3 class="font-bold mt-3">
-            Project
-        </h3>
-
-        <p id="status-project" class="text-xs text-gray-500 mt-2">
-            Pending
-        </p>
-
-    </div>
-
-
-    <div
-        id="card-verification"
-        class="bg-gray-900 border border-gray-800 rounded-2xl p-5 text-center">
-
-        <div class="text-3xl">
-            🏆
-        </div>
-
-        <h3 class="font-bold mt-3">
-            Verification
-        </h3>
-
-        <p id="status-verification" class="text-xs text-gray-500 mt-2">
-            Pending
-        </p>
-
-    </div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- READINESS BAR -->
-<!-- ========================================================= -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex justify-between items-center">
-
-        <div>
-
-            <h3 class="font-bold text-lg">
-                🚀 Industry Readiness
-            </h3>
-
-            <p id="readiness-text" class="text-xs text-gray-400 mt-1">
-                Select a skill and complete the journey.
-            </p>
-
-        </div>
-
-        <span
-            id="readiness-number"
-            class="text-2xl font-black text-indigo-400">
-            0%
-        </span>
-
-    </div>
-
-
-    <div class="w-full bg-gray-800 rounded-full h-3 mt-5 overflow-hidden">
-
-        <div
-            id="readiness-bar"
-            class="progress-bar bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full"
-            style="width:0%">
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- ASSESSMENT + PROJECT -->
-<!-- ========================================================= -->
-
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-
-<!-- ========================================================= -->
-<!-- ASSESSMENT -->
-<!-- ========================================================= -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex justify-between items-center mb-5">
-
-        <div>
-
-            <h3
-                id="assessment-title"
-                class="text-xl font-bold flex items-center gap-2">
-                📜 Skill Assessment
-            </h3>
-
-            <p
-                id="assessment-description"
-                class="text-xs text-gray-500 mt-1">
-                Select a skill to begin your assessment.
-            </p>
-
-        </div>
-
-
-        <button
-            onclick="startAssessment()"
-            id="start-assessment-btn"
-            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg text-xs font-bold">
-            Start Assessment
-        </button>
-
-    </div>
-
-
-    <div id="quiz-container">
-
-        <div class="border border-dashed border-gray-700 rounded-xl p-8 text-center">
-
-            <div class="text-4xl mb-3">
-                🧠
-            </div>
-
-            <h4 class="font-bold text-white">
-                Ready to test your skills?
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-2">
-                Select Python, Java, C++ or SQL and start the assessment.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <button
-        onclick="submitQuiz()"
-        id="submit-quiz-btn"
-        disabled
-        class="w-full mt-6 py-3 bg-emerald-700/50 text-gray-400 font-bold rounded-xl text-sm cursor-not-allowed">
-        Submit Assessment
-    </button>
-
-
-    <div
-        id="assessment-result"
-        class="hidden mt-5">
-    </div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- DYNAMIC PROJECT -->
-<!-- ========================================================= -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="mb-5">
-
-        <h3 class="text-xl font-bold">
-            🚀 Skill-Based Capstone Project
-        </h3>
-
-        <p
-            id="project-subtitle"
-            class="text-xs text-gray-500 mt-1">
-            Your project will adapt to the selected skill.
-        </p>
-
-    </div>
-
-
-    <div class="space-y-4">
-
-
-        <div>
-
-            <label class="text-xs font-semibold text-gray-400">
-                Project Title
-            </label>
-
-            <input
-                id="proj-title"
-                type="text"
-                value=""
-                placeholder="Select a skill first"
-                class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">
-
-        </div>
-
-
-        <div>
-
-            <label class="text-xs font-semibold text-gray-400">
-                Description
-            </label>
-
-            <textarea
-                id="proj-desc"
-                rows="4"
-                placeholder="Project description will appear based on selected skill."
-                class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500"></textarea>
-
-        </div>
-
-
-        <div>
-
-            <label class="text-xs font-semibold text-gray-400">
-                GitHub Repository
-            </label>
-
-            <input
-                id="proj-github"
-                type="text"
-                placeholder="https://github.com/username/project"
-                class="w-full mt-1 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-500">
-
-        </div>
-
-    </div>
-
-
-    <button
-        onclick="submitProject()"
-        class="w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-sm">
-        Submit Project for Mentor Review
-    </button>
-
-
-    <div
-        id="project-result"
-        class="hidden mt-5">
-    </div>
-
-</div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- LEARNING ROADMAP -->
-<!-- ========================================================= -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-6">
-
-        <div>
-
-            <h3 class="text-xl font-bold">
-                🧭 Personalized Skill-Gap Roadmap
-            </h3>
-
-            <p id="roadmap-description" class="text-xs text-gray-500 mt-1">
-                Complete the modules recommended from your assessment.
-            </p>
-
-        </div>
-
-
-        <div class="text-right">
-
-            <span
-                id="learning-percent"
-                class="text-2xl font-black text-indigo-400">
-                0%
-            </span>
-
-            <p class="text-xs text-gray-500">
-                Learning Progress
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <div class="w-full bg-gray-800 rounded-full h-2 mb-6">
-
-        <div
-            id="learning-bar"
-            class="progress-bar bg-indigo-500 h-2 rounded-full"
-            style="width:0%">
-        </div>
-
-    </div>
-
-
-    <div
-        id="modules-container"
-        class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-        <div class="col-span-full border border-dashed border-gray-700 rounded-xl p-10 text-center">
-
-            <div class="text-4xl">
-                📚
-            </div>
-
-            <p class="text-gray-400 mt-3">
-                Complete the assessment to unlock your personalized modules.
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- ACHIEVEMENTS -->
-<!-- ========================================================= -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <h3 class="text-xl font-bold mb-6">
-        🏅 Achievements & Trust Signals
-    </h3>
-
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-
-        <div
-            id="badge-project"
-            class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
-
-            <div class="text-3xl">
-                🏗️
-            </div>
-
-            <h4 class="font-bold mt-3">
-                Project Builder
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Submit your skill-specific capstone project.
-            </p>
-
-        </div>
-
-
-        <div
-            id="badge-mentor"
-            class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
-
-            <div class="text-3xl">
-                👨‍🏫
-            </div>
-
-            <h4 class="font-bold mt-3">
-                Mentor Verified
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Get your project approved by a qualified mentor.
-            </p>
-
-        </div>
-
-
-        <div
-            id="badge-job"
-            class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
-
-            <div class="text-3xl">
-                🎯
-            </div>
-
-            <h4 class="font-bold mt-3">
-                Job Ready
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Complete the complete skill journey.
-            </p>
-
-        </div>
-
-
-        <div
-            id="badge-strike"
-            class="bg-gray-950 border border-gray-800 rounded-xl p-5">
-
-            <div class="text-3xl">
-                🛡️
-            </div>
-
-            <h4 class="font-bold mt-3">
-                Trust Status
-            </h4>
-
-            <p id="strike-status" class="text-xs text-emerald-400 mt-1">
-                0 Strikes • Good Standing
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-</section>
-
-
-<!-- ========================================================= -->
-<!-- MENTOR VIEW -->
-<!-- ========================================================= -->
-
-<section
-    id="view-mentor"
-    class="hidden space-y-8">
-
-
-<div class="bg-gradient-to-r from-emerald-950 via-gray-900 to-gray-950 border border-emerald-500/30 rounded-3xl p-8">
-
-    <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
-        Faculty Board
-    </span>
-
-
-    <h2 class="text-3xl font-black mt-4">
-        Mentor Review Dashboard
-    </h2>
-
-
-    <p class="text-gray-400 text-sm mt-2">
-        Review student projects and verify practical skills.
-    </p>
-
-</div>
-
-
-<!-- MENTOR PROFILE / QUALIFICATION -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-
-        <div>
-
-            <h3 class="text-xl font-bold">
-                👨‍🏫 Mentor Qualification
-            </h3>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Mentor verification is based on the skill being reviewed.
-            </p>
-
-        </div>
-
-
-        <div
-            id="mentor-qualification-badge"
-            class="px-4 py-2 rounded-full bg-gray-950 border border-gray-800 text-gray-400 text-xs font-bold">
-            Checking qualification...
-        </div>
-
-    </div>
-
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-
-
-        <div class="bg-gray-950 rounded-xl p-5">
-
-            <p class="text-xs text-gray-500">
-                Mentor
-            </p>
-
-            <p id="mentor-name" class="font-bold mt-1">
-                Dr. Alan Thomas
-            </p>
-
-        </div>
-
-
-        <div class="bg-gray-950 rounded-xl p-5">
-
-            <p class="text-xs text-gray-500">
-                Current Skill
-            </p>
-
-            <p
-                id="mentor-current-skill"
-                class="font-bold text-indigo-400 mt-1">
-                Python
-            </p>
-
-        </div>
-
-
-        <div class="bg-gray-950 rounded-xl p-5">
-
-            <p class="text-xs text-gray-500">
-                Qualification Status
-            </p>
-
-            <p
-                id="mentor-qualification-text"
-                class="font-bold text-gray-400 mt-1">
-                Checking...
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- MENTOR PROJECT -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex justify-between items-center mb-6">
-
-        <div>
-
-            <h3 class="text-xl font-bold">
-                📋 Submitted Projects
-            </h3>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Review the latest student submission waiting for verification.
-            </p>
-
-        </div>
-
-
-        <button
-            onclick="loadMentorProject()"
-            class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">
-            Refresh
-        </button>
-
-    </div>
-
-
-    <div id="mentor-project-container">
-
-        <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
-
-            <div class="text-4xl">
-                👨‍🏫
-            </div>
-
-            <p class="text-gray-400 mt-3">
-                Click Refresh to load the latest student project.
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- MENTOR STRIKE MANAGEMENT -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div>
-
-        <h3 class="text-xl font-bold">
-            ⚠️ Student Trust & Strike System
-        </h3>
-
-        <p class="text-xs text-gray-500 mt-1">
-            Mentors can flag suspicious or invalid project evidence.
-        </p>
-
-    </div>
-
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-
-
-        <div class="bg-gray-950 border border-gray-800 rounded-xl p-5">
-
-            <p class="text-xs text-gray-500">
-                Student
-            </p>
-
-            <p class="font-bold mt-1">
-                Ananya Rao
-            </p>
-
-        </div>
-
-
-        <div class="bg-gray-950 border border-gray-800 rounded-xl p-5">
-
-            <p class="text-xs text-gray-500">
-                Current Strikes
-            </p>
-
-            <p
-                id="mentor-strike-count"
-                class="font-bold text-amber-400 mt-1">
-                0
-            </p>
-
-        </div>
-
-
-        <div class="bg-gray-950 border border-gray-800 rounded-xl p-5">
-
-            <p class="text-xs text-gray-500">
-                Trust Status
-            </p>
-
-            <p
-                id="mentor-trust-status"
-                class="font-bold text-emerald-400 mt-1">
-                Good Standing
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <button
-        onclick="addStrike()"
-        id="mentor-strike-btn"
-        class="w-full mt-5 py-3 bg-red-900/50 hover:bg-red-900 text-red-300 border border-red-800 rounded-xl font-bold text-sm transition">
-        ⚠️ Flag Invalid Evidence / Add Strike
-    </button>
-
-</div>
-
-
-</section>
-
-
-<!-- ========================================================= -->
-<!-- RECRUITER VIEW -->
-<!-- ========================================================= -->
-
-<section
-    id="view-recruiter"
-    class="hidden space-y-8">
-
-
-<div class="bg-gradient-to-r from-purple-950 via-gray-900 to-gray-950 border border-purple-500/30 rounded-3xl p-8">
-
-    <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">
-        Recruiter Portal
-    </span>
-
-
-    <h2 class="text-3xl font-black mt-4">
-        Verified Talent Search
-    </h2>
-
-
-    <p class="text-gray-400 text-sm mt-2">
-        Find candidates backed by assessment, project and mentor verification.
-    </p>
-
-</div>
-
-
-<!-- SEARCH -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
-
-        <div>
-
-            <h3 class="text-xl font-bold">
-                🔎 Search Verified Skills
-            </h3>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Search across Python, Java, C++ and SQL.
-            </p>
-
-        </div>
-
-
-        <div class="flex gap-2 w-full md:w-auto">
-
-            <input
-                id="skill-search-input"
-                type="text"
-                value="Python"
-                placeholder="Enter skill"
-                class="w-full md:w-64 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
-
-
-            <button
-                onclick="searchCandidates()"
-                class="px-5 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-xs font-bold whitespace-nowrap">
-                Search
+            <button onclick="submitProject()" id="submit-proj-btn" disabled class="w-full mt-6 py-3 bg-gray-800 text-gray-500 font-bold rounded-xl text-sm cursor-not-allowed border border-gray-700">
+                🔒 Complete Skill-Gap Modules to Unlock
             </button>
 
+            <div id="project-result" class="hidden mt-5"></div>
         </div>
-
     </div>
 
-
-    <div id="recruiter-results">
-
-        <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
-
-            <div class="text-4xl">
-                🎯
+    <!-- ADAPTIVE LEARNING ROADMAP -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row justify-between md:items-center gap-3 mb-6">
+            <div>
+                <h3 class="text-xl font-bold">🧭 Personalized Skill-Gap Remediation</h3>
+                <p id="roadmap-description" class="text-xs text-gray-500 mt-1">Modules generated exclusively from your missed diagnostic questions.</p>
             </div>
-
-            <p class="text-gray-400 mt-3">
-                Search for a verified skill to discover candidates.
-            </p>
-
+            <div class="text-right">
+                <span id="learning-percent" class="text-2xl font-black text-indigo-400">0%</span>
+                <p class="text-xs text-gray-500">Remediation Progress</p>
+            </div>
         </div>
-
+        <div class="w-full bg-gray-800 rounded-full h-2 mb-6">
+            <div id="learning-bar" class="progress-bar bg-indigo-500 h-2 rounded-full" style="width:0%"></div>
+        </div>
+        <div id="modules-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="col-span-full border border-dashed border-gray-700 rounded-xl p-10 text-center">
+                <div class="text-4xl">🔒</div>
+                <p class="text-gray-400 mt-3 font-semibold">Diagnostic Assessment Required</p>
+                <p class="text-xs text-gray-500 mt-1">Take the assessment above to detect gaps and generate your tailored roadmap.</p>
+            </div>
+        </div>
     </div>
 
-</div>
-
-
-<!-- RECRUITER TRUST EXPLANATION -->
-
-<div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-
-    <h3 class="text-xl font-bold">
-        🔐 Evidence-Based Hiring
-    </h3>
-
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
-
-
-        <div class="bg-gray-950 rounded-xl p-5">
-
-            <div class="text-2xl">
-                📝
+    <!-- ACHIEVEMENTS -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <h3 class="text-xl font-bold mb-6">🏅 Achievements & Trust Signals</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div id="badge-project" class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
+                <div class="text-3xl">🏗️</div><h4 class="font-bold mt-3">Project Builder</h4><p class="text-xs text-gray-500 mt-1">Submit your verified capstone.</p>
             </div>
-
-            <h4 class="font-bold mt-2">
-                Assessment
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Candidate knowledge is tested through skill-specific assessments.
-            </p>
-
-        </div>
-
-
-        <div class="bg-gray-950 rounded-xl p-5">
-
-            <div class="text-2xl">
-                🚀
+            <div id="badge-mentor" class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
+                <div class="text-3xl">👨‍🏫</div><h4 class="font-bold mt-3">Mentor Verified</h4><p class="text-xs text-gray-500 mt-1">Qualified faculty approval.</p>
             </div>
-
-            <h4 class="font-bold mt-2">
-                Project Evidence
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Candidates demonstrate practical implementation through projects.
-            </p>
-
-        </div>
-
-
-        <div class="bg-gray-950 rounded-xl p-5">
-
-            <div class="text-2xl">
-                🏆
+            <div id="badge-job" class="bg-gray-950 border border-gray-800 rounded-xl p-5 opacity-50">
+                <div class="text-3xl">🎯</div><h4 class="font-bold mt-3">Job Ready</h4><p class="text-xs text-gray-500 mt-1">100% completed journey.</p>
             </div>
-
-            <h4 class="font-bold mt-2">
-                Mentor Verification
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-1">
-                Practical work is reviewed and endorsed by a qualified mentor.
-            </p>
-
+            <div id="badge-strike" class="bg-gray-950 border border-gray-800 rounded-xl p-5">
+                <div class="text-3xl">🛡️</div><h4 class="font-bold mt-3">Trust Status</h4><p id="strike-status" class="text-xs text-emerald-400 mt-1">0 Strikes • Good Standing</p>
+            </div>
         </div>
+    </div>
+</section>
 
+<!-- MENTOR VIEW -->
+<section id="view-mentor" class="hidden space-y-8">
+    <div class="bg-gradient-to-r from-emerald-950 via-gray-900 to-gray-950 border border-emerald-500/30 rounded-3xl p-8">
+        <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">Faculty Board</span>
+        <h2 class="text-3xl font-black mt-4">Mentor Review Dashboard</h2>
+        <p class="text-gray-400 text-sm mt-2">Evaluate student evidence and enforce domain-specific qualifications.</p>
     </div>
 
-</div>
+    <!-- MENTOR PROFILE / QUALIFICATION -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+            <div>
+                <h3 class="text-xl font-bold">👨‍🏫 Mentor Domain Evaluation</h3>
+                <p class="text-xs text-gray-500 mt-1">Mentors can only endorse submissions matching their teaching domains.</p>
+            </div>
+            <div id="mentor-qualification-badge" class="px-4 py-2 rounded-full bg-gray-950 border border-gray-800 text-gray-400 text-xs font-bold">Checking qualification...</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div class="bg-gray-950 rounded-xl p-5"><p class="text-xs text-gray-500">Mentor</p><p id="mentor-name" class="font-bold mt-1">Dr. Alan Thomas</p></div>
+            <div class="bg-gray-950 rounded-xl p-5"><p class="text-xs text-gray-500">Review Skill</p><p id="mentor-current-skill" class="font-bold text-indigo-400 mt-1">Python</p></div>
+            <div class="bg-gray-950 rounded-xl p-5"><p class="text-xs text-gray-500">Qualification Status</p><p id="mentor-qualification-text" class="font-bold text-gray-400 mt-1">Checking...</p></div>
+        </div>
+    </div>
 
+    <!-- MENTOR PROJECT REVIEW -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h3 class="text-xl font-bold">📋 Submitted Projects Queue</h3>
+                <p class="text-xs text-gray-500 mt-1">Live queue of student submissions waiting for evaluation.</p>
+            </div>
+            <button onclick="loadMentorProject()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-xs font-bold">Refresh Queue</button>
+        </div>
+        <div id="mentor-project-container"></div>
+    </div>
 
+    <!-- MENTOR STRIKE SYSTEM -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <h3 class="text-xl font-bold">⚠️ Academic Integrity & Strike System</h3>
+        <p class="text-xs text-gray-500 mt-1">Flag plagiarized repositories or falsified submissions. Max 3 strikes.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+            <div class="bg-gray-950 border border-gray-800 rounded-xl p-5"><p class="text-xs text-gray-500">Student</p><p class="font-bold mt-1">Ananya Rao (#4)</p></div>
+            <div class="bg-gray-950 border border-gray-800 rounded-xl p-5"><p class="text-xs text-gray-500">Total Strikes</p><p id="mentor-strike-count" class="font-bold text-amber-400 mt-1">0</p></div>
+            <div class="bg-gray-950 border border-gray-800 rounded-xl p-5"><p class="text-xs text-gray-500">Trust Status</p><p id="mentor-trust-status" class="font-bold text-emerald-400 mt-1">Good Standing</p></div>
+        </div>
+        <button onclick="addStrike()" id="mentor-strike-btn" class="w-full mt-5 py-3 bg-red-900/50 hover:bg-red-900 text-red-300 border border-red-800 rounded-xl font-bold text-sm transition">
+            ⚠️ Flag Invalid Evidence / Add Strike
+        </button>
+    </div>
+</section>
+
+<!-- RECRUITER VIEW -->
+<section id="view-recruiter" class="hidden space-y-8">
+    <div class="bg-gradient-to-r from-purple-950 via-gray-900 to-gray-950 border border-purple-500/30 rounded-3xl p-8">
+        <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">Recruiter Portal</span>
+        <h2 class="text-3xl font-black mt-4">Evidence-Backed Talent Search</h2>
+        <p class="text-gray-400 text-sm mt-2">Filter students by verified skills backed by diagnostic quizzes, gap learning, and mentor approval.</p>
+    </div>
+
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-6">
+            <div>
+                <h3 class="text-xl font-bold">🔎 Search Verified Candidates</h3>
+                <p class="text-xs text-gray-500 mt-1">Only students whose skills are genuinely mentor-verified appear here.</p>
+            </div>
+            <div class="flex gap-2 w-full md:w-auto">
+                <input id="skill-search-input" type="text" value="Python" placeholder="Enter skill" class="w-full md:w-64 bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-purple-500">
+                <button onclick="searchCandidates()" class="px-5 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg text-xs font-bold whitespace-nowrap">Search</button>
+            </div>
+        </div>
+        <div id="recruiter-results"></div>
+    </div>
 </section>
 
 </main>
 
-
-<!-- ========================================================= -->
-<!-- FOOTER -->
-<!-- ========================================================= -->
-
 <footer class="bg-gray-900 border-t border-gray-800 py-5 text-center text-xs text-gray-500">
-
-    Co-Lab Hackathon Demo Platform • FastAPI + SQLite • Evidence-Based Skill Verification
-
+    Co-Lab Hackathon Platform • FastAPI + SQLite • Evidence-Based Skill Verification
 </footer>
 
-
-<!-- ========================================================= -->
-<!-- JAVASCRIPT -->
-<!-- ========================================================= -->
-
+<!-- JAVASCRIPT STATE ENGINE -->
 <script>
-
-
-/* =========================================================
-   CONFIGURATION
-========================================================= */
-
 const API = "http://127.0.0.1:8000";
-
 const STUDENT_ID = 4;
-
 const ACTIVE_MENTOR_NAME = "Dr. Alan Thomas";
-
-const AVAILABLE_SKILLS = [
-    "Python",
-    "Java",
-    "C++",
-    "SQL"
-];
-
+const AVAILABLE_SKILLS = ["Python", "Java", "C++", "SQL"];
 
 let selectedSkill = null;
-
 let quizQuestions = [];
-
 let selectedAnswers = {};
-
 let assessmentCompleted = false;
-
-let assessmentScore = 0;
-
 let projectSubmitted = false;
-
 let projectVerified = false;
-
-let currentProjectId = null;
-
-let currentProjectData = null;
-
-let completedModules = [];
-
+let projectUnlocked = false;
 let strikeCount = 0;
-
 let mentorQualified = false;
 
-
-/* =========================================================
-   SKILL-SPECIFIC PROJECT DATA
-========================================================= */
-
 const skillProjectTemplates = {
-
     Python: {
         title: "Python Student Management System",
-        description:
-            "A Python application for managing student records using CRUD operations, file handling and Python data structures.",
-        github:
-            "https://github.com/username/python-student-management-system",
-        subtitle:
-            "Build a practical Python application demonstrating programming fundamentals."
+        description: "A Python application for managing student records using CRUD operations, file handling and Python data structures.",
+        github: "https://github.com/username/python-student-management-system",
+        subtitle: "Build a practical Python application demonstrating programming fundamentals."
     },
-
     Java: {
         title: "Java Library Management System",
-        description:
-            "A Java application for managing books, members and borrowing records using object-oriented programming, collections and database operations.",
-        github:
-            "https://github.com/username/java-library-management-system",
-        subtitle:
-            "Build a practical Java application demonstrating object-oriented programming."
+        description: "A Java application for managing books, members and borrowing records using object-oriented programming and collections.",
+        github: "https://github.com/username/java-library-management-system",
+        subtitle: "Build a practical Java application demonstrating object-oriented programming."
     },
-
     "C++": {
         title: "C++ Inventory Management System",
-        description:
-            "A C++ application for managing products and inventory using classes, STL containers, searching, sorting and file handling.",
-        github:
-            "https://github.com/username/cpp-inventory-management-system",
-        subtitle:
-            "Build a practical C++ application demonstrating algorithms and object-oriented programming."
+        description: "A C++ application for managing products and inventory using classes, STL containers, and file handling.",
+        github: "https://github.com/username/cpp-inventory-management-system",
+        subtitle: "Build a practical C++ application demonstrating algorithms and OOP."
     },
-
     SQL: {
         title: "SQL Student Database & Analytics System",
-        description:
-            "A relational database project using SQL to manage students, courses, marks and attendance with joins, aggregate queries, constraints and database design.",
-        github:
-            "https://github.com/username/sql-student-database-analytics",
-        subtitle:
-            "Build a practical SQL database demonstrating relational modelling and advanced queries."
+        description: "A relational database project using SQL to manage students, courses, marks and attendance with joins and constraints.",
+        github: "https://github.com/username/sql-student-database-analytics",
+        subtitle: "Build a practical SQL database demonstrating relational modelling and advanced queries."
     }
-
 };
 
-
-/* =========================================================
-   NOTIFICATION
-========================================================= */
-
 function showNotification(message, type = "success") {
-
-    const box =
-        document.getElementById("notification");
-
-    const content =
-        document.getElementById("notification-content");
-
-
+    const box = document.getElementById("notification");
+    const content = document.getElementById("notification-content");
     box.classList.remove("hidden");
-
-
-    if (type === "error") {
-
-        content.className =
-            "rounded-xl px-5 py-4 border text-sm bg-red-950/50 border-red-800 text-red-300";
-
-    } else {
-
-        content.className =
-            "rounded-xl px-5 py-4 border text-sm bg-emerald-950/50 border-emerald-800 text-emerald-300";
-
-    }
-
-
+    content.className = type === "error" 
+        ? "rounded-xl px-5 py-4 border text-sm bg-red-950/50 border-red-800 text-red-300"
+        : "rounded-xl px-5 py-4 border text-sm bg-emerald-950/50 border-emerald-800 text-emerald-300";
     content.textContent = message;
-
-
-    setTimeout(() => {
-
-        box.classList.add("hidden");
-
-    }, 4000);
-
+    setTimeout(() => { box.classList.add("hidden"); }, 4000);
 }
-
-
-/* =========================================================
-   TAB SWITCHING
-========================================================= */
 
 function switchTab(role) {
-
-    const roles = [
-        "student",
-        "mentor",
-        "recruiter"
-    ];
-
-
-    roles.forEach(item => {
-
-        document
-            .getElementById("view-" + item)
-            .classList.add("hidden");
-
-
-        document
-            .getElementById("tab-" + item)
-            .className =
-            "px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white";
-
+    ["student", "mentor", "recruiter"].forEach(item => {
+        document.getElementById("view-" + item).classList.add("hidden");
+        document.getElementById("tab-" + item).className = "px-5 py-2 rounded-lg text-xs font-bold text-gray-400 hover:text-white";
     });
-
-
-    document
-        .getElementById("view-" + role)
-        .classList.remove("hidden");
-
-
-    document
-        .getElementById("tab-" + role)
-        .className =
-        "px-5 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white";
-
+    document.getElementById("view-" + role).classList.remove("hidden");
+    document.getElementById("tab-" + role).className = "px-5 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white";
 
     if (role === "mentor") {
-
         loadMentorProject();
         fetchStudentStrikes();
-
-    } else if (role === "student") {
-
-        if (selectedSkill) {
-            syncStudentState(selectedSkill);
-        }
-
+    } else if (role === "student" && selectedSkill) {
+        syncStudentState(selectedSkill);
     } else if (role === "recruiter") {
-
         searchCandidates();
-
     }
-
 }
-
-
-/* =========================================================
-   SELECT SKILL
-========================================================= */
 
 async function selectSkill(skill) {
-
     selectedSkill = skill;
-
     quizQuestions = [];
-
     selectedAnswers = {};
 
-
-    /* Highlight skill */
-
     AVAILABLE_SKILLS.forEach(item => {
-
-        const card =
-            document.getElementById("skill-" + item);
-
-        if (card) {
-
-            card.classList.remove("selected");
-
-        }
-
+        const card = document.getElementById("skill-" + item);
+        if (card) card.classList.remove("selected");
     });
+    const selectedCard = document.getElementById("skill-" + skill);
+    if (selectedCard) selectedCard.classList.add("selected");
 
+    document.getElementById("selected-skill-badge").textContent = skill + " Selected";
+    document.getElementById("assessment-title").innerHTML = "📜 " + escapeHtml(skill) + " Diagnostic Assessment";
+    document.getElementById("assessment-description").textContent = "Test your " + skill + " fundamentals to identify exact gaps.";
+    
+    const startBtn = document.getElementById("start-assessment-btn");
+    startBtn.textContent = "Start " + skill + " Assessment";
+    startBtn.disabled = false;
+    startBtn.classList.remove("opacity-50", "cursor-not-allowed");
 
-    const selectedCard =
-        document.getElementById("skill-" + skill);
-
-    if (selectedCard) {
-
-        selectedCard.classList.add("selected");
-
-    }
-
-
-    /* Skill badge */
-
-    document.getElementById(
-        "selected-skill-badge"
-    ).textContent =
-        skill + " Selected";
-
-
-    /* Assessment Labels */
-
-    document.getElementById(
-        "assessment-title"
-    ).innerHTML =
-        "📜 " + escapeHtml(skill) + " Assessment";
-
-
-    document.getElementById(
-        "assessment-description"
-    ).textContent =
-        "Test your " + skill + " fundamentals.";
-
-
-    document.getElementById(
-        "start-assessment-btn"
-    ).textContent =
-        "Start " + skill + " Assessment";
-
-    document.getElementById("start-assessment-btn").disabled = false;
-    document.getElementById("start-assessment-btn").classList.remove("opacity-50", "cursor-not-allowed");
-
-
-    /* Project Template Pre-fill */
-
-    const template =
-        skillProjectTemplates[skill];
-
-
+    const template = skillProjectTemplates[skill];
     if (template) {
-
-        document.getElementById(
-            "proj-title"
-        ).value =
-            template.title;
-
-
-        document.getElementById(
-            "proj-desc"
-        ).value =
-            template.description;
-
-
-        document.getElementById(
-            "proj-github"
-        ).value =
-            template.github;
-
-
-        document.getElementById(
-            "project-subtitle"
-        ).textContent =
-            template.subtitle;
-
+        document.getElementById("proj-title").value = template.title;
+        document.getElementById("proj-desc").value = template.description;
+        document.getElementById("proj-github").value = template.github;
+        document.getElementById("project-subtitle").textContent = template.subtitle;
     }
 
-
-    /* Roadmap */
-
-    document.getElementById(
-        "roadmap-description"
-    ).textContent =
-        "Complete the " +
-        skill +
-        " modules recommended from your assessment.";
-
-
-    /* Reset Quiz UI */
-
-    document.getElementById(
-        "quiz-container"
-    ).innerHTML = `
-
+    document.getElementById("quiz-container").innerHTML = `
         <div class="border border-dashed border-gray-700 rounded-xl p-8 text-center">
-
-            <div class="text-4xl mb-3">
-                🧠
-            </div>
-
-            <h4 class="font-bold text-white">
-                ${escapeHtml(skill)} assessment ready
-            </h4>
-
-            <p class="text-xs text-gray-500 mt-2">
-                Click "Start ${escapeHtml(skill)} Assessment" to begin.
-            </p>
-
+            <div class="text-4xl mb-3">🧠</div>
+            <h4 class="font-bold text-white">${escapeHtml(skill)} diagnostic assessment ready</h4>
+            <p class="text-xs text-gray-500 mt-2">Click "Start ${escapeHtml(skill)} Assessment" to begin.</p>
         </div>
-
     `;
 
-
-    const submitButton =
-        document.getElementById(
-            "submit-quiz-btn"
-        );
-
-
+    const submitButton = document.getElementById("submit-quiz-btn");
     submitButton.disabled = true;
-
-    submitButton.textContent =
-        "Submit Assessment";
-
-    submitButton.className =
-        "w-full mt-6 py-3 bg-emerald-700/50 text-gray-400 font-bold rounded-xl text-sm cursor-not-allowed";
-
-
-    document
-        .getElementById("assessment-result")
-        .classList.add("hidden");
-
-
-    /* Sync with Backend Database for this skill */
+    submitButton.textContent = "Submit Assessment";
+    submitButton.className = "w-full mt-6 py-3 bg-emerald-700/50 text-gray-400 font-bold rounded-xl text-sm cursor-not-allowed";
+    document.getElementById("assessment-result").classList.add("hidden");
 
     await syncStudentState(skill);
-
 }
 
-
-/* =========================================================
-   SYNCHRONIZE STUDENT STATE FROM BACKEND (Source of Truth)
-========================================================= */
-
 async function syncStudentState(skill) {
-
     try {
-
         const readinessRes = await fetch(`${API}/api/student/readiness?student_id=${STUDENT_ID}&skill=${encodeURIComponent(skill)}`);
-
         if (readinessRes.ok) {
-
             const rData = await readinessRes.json();
-
             assessmentCompleted = rData.assessment_completed;
             projectSubmitted = rData.project_submitted;
             projectVerified = rData.project_verified;
+            projectUnlocked = rData.project_unlocked;
 
-            /* Assessment Status Card */
             if (assessmentCompleted) {
                 document.getElementById("status-assessment").textContent = "Completed";
                 document.getElementById("status-assessment").className = "text-xs text-emerald-400 mt-2 font-bold";
-                document.getElementById("status-gap").textContent = "Roadmap Ready";
-                document.getElementById("status-gap").className = "text-xs text-emerald-400 mt-2 font-bold";
+                document.getElementById("status-gap").textContent = rData.learning_completed ? "Remediated" : "Gaps Active";
+                document.getElementById("status-gap").className = rData.learning_completed ? "text-xs text-emerald-400 mt-2 font-bold" : "text-xs text-amber-400 mt-2 font-bold";
             } else {
                 document.getElementById("status-assessment").textContent = "Not Started";
                 document.getElementById("status-assessment").className = "text-xs text-gray-500 mt-2";
@@ -1602,2226 +440,518 @@ async function syncStudentState(skill) {
                 document.getElementById("status-gap").className = "text-xs text-gray-500 mt-2";
             }
 
-            /* Modules Roadmap Sync */
             await loadSkillGapModules();
-
-            /* Project Card Sync */
             await syncStudentProjectCard(skill);
-
-            /* Badges & Readiness */
             updateJourneyFromData(rData.readiness);
-
         }
-
-        /* Sync Student Strikes */
         await fetchStudentStrikes();
-
     } catch (e) {
         console.error("Sync error:", e);
     }
-
 }
-
-
-async function syncStudentProjectCard(skill) {
-
-    try {
-
-        const portRes = await fetch(`${API}/api/students/portfolio`);
-
-        if (portRes.ok) {
-
-            const pData = await portRes.json();
-
-            const student = (pData.students || []).find(s => s.id === STUDENT_ID);
-
-            if (student && student.projects && student.projects.length > 0) {
-
-                const matchingProjects = student.projects.filter(p => p.skill.toLowerCase() === skill.toLowerCase());
-
-                if (matchingProjects.length > 0) {
-
-                    const latestProj = matchingProjects[matchingProjects.length - 1];
-
-                    currentProjectId = latestProj.id;
-                    currentProjectData = latestProj;
-                    projectSubmitted = true;
-                    projectVerified = latestProj.status === "Verified";
-
-                    const projectResultBox = document.getElementById("project-result");
-                    projectResultBox.classList.remove("hidden");
-
-                    if (projectVerified) {
-
-                        document.getElementById("status-project").textContent = "Verified • #" + latestProj.id;
-                        document.getElementById("status-project").className = "text-xs text-emerald-400 mt-2 font-bold";
-
-                        document.getElementById("status-verification").textContent = "Mentor Verified";
-                        document.getElementById("status-verification").className = "text-xs text-emerald-400 mt-2 font-bold";
-
-                        document.getElementById("badge-project").classList.remove("opacity-50");
-                        document.getElementById("badge-mentor").classList.remove("opacity-50");
-
-                        projectResultBox.innerHTML = `
-                            <div class="bg-emerald-950/40 border border-emerald-700 rounded-xl p-5">
-                                <p class="text-emerald-400 font-bold text-sm">
-                                    ✓ ${escapeHtml(skill)} project verified successfully
-                                </p>
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Project ID: <span class="text-white font-bold">#${escapeHtml(latestProj.id)}</span>
-                                </p>
-                                <p class="text-xs text-gray-400 mt-1">
-                                    Status: <span class="text-emerald-400 font-semibold">✓ Mentor Verified</span>
-                                </p>
-                                <p class="text-xs text-gray-400 mt-1">
-                                    Verified By: <span class="text-white font-semibold">${escapeHtml(latestProj.verified_by || ACTIVE_MENTOR_NAME)}</span>
-                                </p>
-                                <p class="text-xs text-emerald-400/80 mt-3 font-medium">
-                                    ✓ Your ${escapeHtml(skill)} project has been verified by a qualified faculty mentor.
-                                </p>
-                            </div>
-                        `;
-
-                    } else {
-
-                        document.getElementById("status-project").textContent = "Submitted • #" + latestProj.id;
-                        document.getElementById("status-project").className = "text-xs text-indigo-400 mt-2 font-bold";
-
-                        document.getElementById("status-verification").textContent = "Pending";
-                        document.getElementById("status-verification").className = "text-xs text-gray-500 mt-2";
-
-                        document.getElementById("badge-project").classList.remove("opacity-50");
-                        document.getElementById("badge-mentor").classList.add("opacity-50");
-
-                        projectResultBox.innerHTML = `
-                            <div class="bg-indigo-950/40 border border-indigo-700 rounded-xl p-5">
-                                <p class="text-indigo-300 font-bold text-sm">
-                                    ✓ ${escapeHtml(skill)} project submitted successfully
-                                </p>
-                                <p class="text-xs text-gray-400 mt-2">
-                                    Project ID: <span class="text-white font-bold">#${escapeHtml(latestProj.id)}</span>
-                                </p>
-                                <p class="text-xs text-gray-400 mt-1">
-                                    Status: <span class="text-amber-400 font-semibold">Pending Mentor Verification</span>
-                                </p>
-                                <p class="text-xs text-gray-500 mt-3">
-                                    A qualified mentor can now review your ${escapeHtml(skill)} project.
-                                </p>
-                            </div>
-                        `;
-
-                    }
-
-                    return;
-
-                }
-
-            }
-
-        }
-
-        /* If no project found for this skill */
-        projectSubmitted = false;
-        projectVerified = false;
-        currentProjectId = null;
-        currentProjectData = null;
-
-        document.getElementById("status-project").textContent = "Pending";
-        document.getElementById("status-project").className = "text-xs text-gray-500 mt-2";
-
-        document.getElementById("status-verification").textContent = "Pending";
-        document.getElementById("status-verification").className = "text-xs text-gray-500 mt-2";
-
-        document.getElementById("badge-project").classList.add("opacity-50");
-        document.getElementById("badge-mentor").classList.add("opacity-50");
-        document.getElementById("project-result").classList.add("hidden");
-
-    } catch (e) {
-        console.error("Project sync error:", e);
-    }
-
-}
-
-
-/* =========================================================
-   START ASSESSMENT
-========================================================= */
 
 async function startAssessment() {
-
     if (!selectedSkill) {
-
-        showNotification(
-            "Please select a skill first.",
-            "error"
-        );
-
+        showNotification("Please select a skill first.", "error");
         return;
     }
-
-
-    const container =
-        document.getElementById(
-            "quiz-container"
-        );
-
-
-    container.innerHTML = `
-
-        <div class="text-center py-8">
-
-            <div class="text-3xl animate-pulse">
-                ⏳
-            </div>
-
-            <p class="text-gray-400 text-sm mt-3">
-                Loading ${escapeHtml(selectedSkill)} assessment...
-            </p>
-
-        </div>
-
-    `;
-
+    const container = document.getElementById("quiz-container");
+    container.innerHTML = `<div class="text-center py-8"><div class="text-3xl animate-pulse">⏳</div><p class="text-gray-400 text-sm mt-3">Loading diagnostic assessment...</p></div>`;
 
     try {
-
-        const response =
-            await fetch(
-                API +
-                "/api/assessment/questions?skill=" +
-                encodeURIComponent(selectedSkill)
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load assessment"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        quizQuestions =
-            data.questions || [];
-
-
+        const response = await fetch(`${API}/api/assessment/questions?skill=${encodeURIComponent(selectedSkill)}`);
+        if (!response.ok) throw new Error("Unable to load assessment");
+        const data = await response.json();
+        quizQuestions = data.questions || [];
         selectedAnswers = {};
-
-
-        if (quizQuestions.length === 0) {
-
-            container.innerHTML = `
-
-                <div class="text-center text-red-400 py-8">
-
-                    No ${escapeHtml(selectedSkill)}
-                    assessment questions are available.
-
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
         renderQuiz();
 
-
-        document.getElementById(
-            "start-assessment-btn"
-        ).textContent =
-            "Assessment Started";
-
-
-        document.getElementById(
-            "start-assessment-btn"
-        ).disabled = true;
-
-
-        document.getElementById(
-            "start-assessment-btn"
-        ).classList.add(
-            "opacity-50",
-            "cursor-not-allowed"
-        );
-
-
-        showNotification(
-            selectedSkill +
-            " assessment started. Select one answer for every question."
-        );
-
-
+        const startBtn = document.getElementById("start-assessment-btn");
+        startBtn.textContent = "Assessment In Progress";
+        startBtn.disabled = true;
+        startBtn.classList.add("opacity-50", "cursor-not-allowed");
     } catch (error) {
-
-        container.innerHTML = `
-
-            <div class="text-center py-8">
-
-                <div class="text-3xl">
-                    ⚠️
-                </div>
-
-                <p class="text-red-400 text-sm mt-3">
-                    Could not connect to the FastAPI server.
-                </p>
-
-            </div>
-
-        `;
-
-
-        showNotification(
-            "Make sure FastAPI is running on port 8000.",
-            "error"
-        );
-
+        container.innerHTML = `<div class="text-center py-8 text-red-400">Failed to connect to FastAPI server.</div>`;
     }
-
 }
-
-
-/* =========================================================
-   RENDER QUIZ
-========================================================= */
 
 function renderQuiz() {
-
-    const container =
-        document.getElementById(
-            "quiz-container"
-        );
-
-
+    const container = document.getElementById("quiz-container");
     let html = `
-
         <div class="space-y-6">
-
             <div class="flex justify-between items-center">
-
-                <div>
-
-                    <span class="text-xs font-bold text-indigo-400">
-                        ${escapeHtml(selectedSkill).toUpperCase()}
-                        SKILL ASSESSMENT
-                    </span>
-
-                    <p class="text-xs text-gray-500 mt-1">
-                        Choose one answer for each question.
-                    </p>
-
-                </div>
-
-                <span class="text-xs text-gray-500">
-                    ${quizQuestions.length} Questions
-                </span>
-
+                <span class="text-xs font-bold text-indigo-400 uppercase">${escapeHtml(selectedSkill)} DIAGNOSTIC ASSESSMENT</span>
+                <span class="text-xs text-gray-500">${quizQuestions.length} Questions</span>
             </div>
-
     `;
 
-
-    quizQuestions.forEach(
-        (question, index) => {
-
-            html += `
-
-                <div class="border border-gray-800 rounded-xl p-5 bg-gray-950">
-
-                    <div class="flex gap-2">
-
-                        <span class="text-indigo-400 font-black">
-                            Q${index + 1}.
-                        </span>
-
-                        <p class="font-semibold text-white">
-                            ${escapeHtml(question.question)}
-                        </p>
-
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-
-            `;
-
-
-            question.options.forEach(
-                (option, optionIndex) => {
-
-                    const optionId =
-                        "q" +
-                        question.id +
-                        "_option" +
-                        optionIndex;
-
-
-                    html += `
-
-                        <label
-                            for="${optionId}"
-                            id="${optionId}_label"
-                            class="option-card border border-gray-800 bg-gray-900 rounded-lg p-3 flex items-center gap-3">
-
-                            <input
-                                type="radio"
-                                id="${optionId}"
-                                name="question_${question.id}"
-                                value="${escapeHtml(option)}"
-                                onchange="selectAnswer(${question.id}, '${escapeJs(option)}', '${optionId}_label')"
-                                class="accent-indigo-500">
-
-                            <span class="text-sm text-gray-300">
-                                ${escapeHtml(option)}
-                            </span>
-
-                        </label>
-
-                    `;
-
-                }
-            );
-
-
-            html += `
-
-                    </div>
-
+    quizQuestions.forEach((question, index) => {
+        html += `
+            <div class="border border-gray-800 rounded-xl p-5 bg-gray-950">
+                <div class="flex gap-2">
+                    <span class="text-indigo-400 font-black">Q${index + 1}.</span>
+                    <p class="font-semibold text-white">${escapeHtml(question.question)}</p>
                 </div>
-
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+        `;
+        question.options.forEach((option, optionIndex) => {
+            const optionId = `q${question.id}_option${optionIndex}`;
+            html += `
+                <label for="${optionId}" id="${optionId}_label" class="option-card border border-gray-800 bg-gray-900 rounded-lg p-3 flex items-center gap-3">
+                    <input type="radio" id="${optionId}" name="question_${question.id}" value="${escapeHtml(option)}" onchange="selectAnswer(${question.id}, '${escapeJs(option)}', '${optionId}_label')" class="accent-indigo-500">
+                    <span class="text-sm text-gray-300">${escapeHtml(option)}</span>
+                </label>
             `;
-
-        }
-    );
-
-
-    html += `
-
-        </div>
-
-    `;
-
-
-    container.innerHTML = html;
-
-
-    const submitButton =
-        document.getElementById(
-            "submit-quiz-btn"
-        );
-
-
-    submitButton.disabled = false;
-
-
-    submitButton.className =
-        "w-full mt-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm transition";
-
-
-    document.getElementById(
-        "status-assessment"
-    ).textContent =
-        "In Progress";
-
-
-    document.getElementById(
-        "status-assessment"
-    ).className =
-        "text-xs text-indigo-400 mt-2 font-semibold";
-
-}
-
-
-/* =========================================================
-   SELECT ANSWER
-========================================================= */
-
-function selectAnswer(
-    questionId,
-    answer,
-    labelId
-) {
-
-    selectedAnswers[questionId] =
-        answer;
-
-
-    const labels =
-        document.querySelectorAll(
-            `[id^="q${questionId}_option"][id$="_label"]`
-        );
-
-
-    labels.forEach(label => {
-
-        label.classList.remove(
-            "selected"
-        );
-
+        });
+        html += `</div></div>`;
     });
 
+    html += `</div>`;
+    container.innerHTML = html;
 
-    const selectedLabel =
-        document.getElementById(
-            labelId
-        );
-
-
-    if (selectedLabel) {
-
-        selectedLabel.classList.add(
-            "selected"
-        );
-
-    }
-
+    const submitBtn = document.getElementById("submit-quiz-btn");
+    submitBtn.disabled = false;
+    submitBtn.className = "w-full mt-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm transition";
 }
 
-
-/* =========================================================
-   SUBMIT QUIZ
-========================================================= */
+function selectAnswer(questionId, answer, labelId) {
+    selectedAnswers[questionId] = answer;
+    document.querySelectorAll(`[id^="q${questionId}_option"][id$="_label"]`).forEach(l => l.classList.remove("selected"));
+    const selectedLabel = document.getElementById(labelId);
+    if (selectedLabel) selectedLabel.classList.add("selected");
+}
 
 async function submitQuiz() {
-
-    if (!selectedSkill) {
-
-        showNotification(
-            "Please select a skill first.",
-            "error"
-        );
-
+    if (Object.keys(selectedAnswers).length !== quizQuestions.length) {
+        showNotification("Please answer all diagnostic questions.", "error");
         return;
-
     }
-
-
-    if (quizQuestions.length === 0) {
-
-        showNotification(
-            "Please start the assessment first.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if (
-        Object.keys(selectedAnswers).length !==
-        quizQuestions.length
-    ) {
-
-        showNotification(
-            "Please answer all questions before submitting.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    const submitButton =
-        document.getElementById(
-            "submit-quiz-btn"
-        );
-
-
+    const submitButton = document.getElementById("submit-quiz-btn");
     submitButton.disabled = true;
-
-    submitButton.textContent =
-        "Submitting Assessment...";
-
+    submitButton.textContent = "Analyzing Skill Gaps...";
 
     try {
-
-        const answers = {};
-
-
-        Object.keys(
-            selectedAnswers
-        ).forEach(questionId => {
-
-            answers[questionId] =
-                selectedAnswers[questionId];
-
+        const response = await fetch(`${API}/api/assessment/submit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student_id: STUDENT_ID, skill: selectedSkill, answers: selectedAnswers })
         });
-
-
-        const response =
-            await fetch(
-                API +
-                "/api/assessment/submit",
-                {
-
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-
-                        student_id:
-                            STUDENT_ID,
-
-                        skill:
-                            selectedSkill,
-
-                        answers:
-                            answers
-
-                    })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            data.error
-        ) {
-
-            throw new Error(
-                data.error ||
-                data.detail ||
-                "Assessment failed"
-            );
-
-        }
-
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Submission failed");
 
         assessmentCompleted = true;
-        assessmentScore = data.score;
+        document.getElementById("status-assessment").textContent = `Completed • ${data.score}/${data.total}`;
+        document.getElementById("status-assessment").className = "text-xs text-emerald-400 mt-2 font-bold";
 
-
-        document.getElementById(
-            "status-assessment"
-        ).textContent =
-            "Completed • " +
-            data.score +
-            "/" +
-            data.total;
-
-
-        document.getElementById(
-            "status-assessment"
-        ).className =
-            "text-xs text-emerald-400 mt-2 font-bold";
-
-
-        if (data.skill_gap) {
-
-            document.getElementById(
-                "status-gap"
-            ).textContent =
-                "Gap Detected";
-
-
-            document.getElementById(
-                "status-gap"
-            ).className =
-                "text-xs text-amber-400 mt-2 font-bold";
-
-
-            document.getElementById(
-                "motivation-message"
-            ).textContent =
-                "💪 Skill gap detected in " +
-                selectedSkill +
-                ". Your personalized roadmap is ready.";
-
-        } else {
-
-            document.getElementById(
-                "status-gap"
-            ).textContent =
-                "No Major Gap";
-
-
-            document.getElementById(
-                "status-gap"
-            ).className =
-                "text-xs text-emerald-400 mt-2 font-bold";
-
-
-            document.getElementById(
-                "motivation-message"
-            ).textContent =
-                "🎉 Excellent " +
-                selectedSkill +
-                " assessment! Build practical proof through your project.";
-
-        }
-
-
-        /* Load Modules from Backend */
-        await loadSkillGapModules();
-
-
-        /* Assessment Result UI */
-
-        const resultBox =
-            document.getElementById(
-                "assessment-result"
-            );
-
-
-        resultBox.classList.remove(
-            "hidden"
-        );
-
-
-        const resultClass =
-            data.score >= 3
-                ? "bg-emerald-950/50 border-emerald-700 text-emerald-300"
-                : "bg-amber-950/50 border-amber-700 text-amber-300";
-
-
+        const resultBox = document.getElementById("assessment-result");
+        resultBox.classList.remove("hidden");
         resultBox.innerHTML = `
-
-            <div class="border ${resultClass} rounded-xl p-5">
-
+            <div class="border ${data.score >= 4 ? 'bg-emerald-950/50 border-emerald-700 text-emerald-300' : 'bg-amber-950/50 border-amber-700 text-amber-300'} rounded-xl p-5">
                 <div class="flex justify-between items-center">
-
                     <div>
-
-                        <p class="text-xs uppercase font-bold tracking-wider">
-                            ${escapeHtml(selectedSkill)}
-                            Assessment Result
-                        </p>
-
-                        <h4 class="text-2xl font-black mt-1">
-                            ${data.score}/${data.total}
-                        </h4>
-
+                        <p class="text-xs uppercase font-bold tracking-wider">${escapeHtml(selectedSkill)} Diagnostic Result</p>
+                        <h4 class="text-2xl font-black mt-1">${data.score}/${data.total}</h4>
                     </div>
-
-                    <div class="text-3xl">
-                        ${data.score >= 3 ? "🎉" : "💪"}
-                    </div>
-
+                    <div class="text-3xl">${data.score >= 4 ? "🎉" : "💡"}</div>
                 </div>
-
-
-                <p class="text-sm font-semibold mt-3">
-                    ${escapeHtml(data.result || "")}
-                </p>
-
-
-                <p class="text-xs mt-2 opacity-80">
-                    ${escapeHtml(data.message || "")}
-                </p>
-
+                <p class="text-sm font-semibold mt-3">${escapeHtml(data.result)}</p>
+                <p class="text-xs mt-2 opacity-90">${escapeHtml(data.message)}</p>
             </div>
-
         `;
-
-
-        submitButton.textContent =
-            "Assessment Completed";
-
-
-        submitButton.className =
-            "w-full mt-6 py-3 bg-emerald-900/40 text-emerald-400 font-bold rounded-xl text-sm";
-
+        submitButton.textContent = "Assessment Completed";
+        submitButton.className = "w-full mt-6 py-3 bg-emerald-900/40 text-emerald-400 font-bold rounded-xl text-sm";
 
         await syncStudentState(selectedSkill);
-
-
-        showNotification(
-            selectedSkill +
-            " assessment completed! Score: " +
-            data.score +
-            "/" +
-            data.total
-        );
-
-
+        showNotification(`Diagnostic complete: Generated ${data.assigned_modules_count} tailored module(s).`);
     } catch (error) {
-
-        submitButton.disabled =
-            false;
-
-
-        submitButton.textContent =
-            "Submit Assessment";
-
-
-        showNotification(
-            error.message ||
-            "Could not submit assessment.",
-            "error"
-        );
-
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Assessment";
+        showNotification(error.message, "error");
     }
-
 }
-
-
-/* =========================================================
-   LOAD SKILL GAP MODULES (From Backend)
-========================================================= */
 
 async function loadSkillGapModules() {
-
-    if (!selectedSkill) {
+    const container = document.getElementById("modules-container");
+    if (!assessmentCompleted) {
+        container.innerHTML = `
+            <div class="col-span-full border border-dashed border-gray-700 rounded-xl p-10 text-center">
+                <div class="text-4xl">🔒</div>
+                <p class="text-gray-400 mt-3 font-semibold">Diagnostic Assessment Required</p>
+                <p class="text-xs text-gray-500 mt-1">Take the assessment above to detect gaps and unlock your tailored roadmap.</p>
+            </div>
+        `;
+        document.getElementById("status-learning").textContent = "Locked";
+        document.getElementById("learning-percent").textContent = "0%";
+        document.getElementById("learning-bar").style.width = "0%";
         return;
     }
 
-
-    const container =
-        document.getElementById(
-            "modules-container"
-        );
-
-
     try {
+        const response = await fetch(`${API}/api/student/modules?student_id=${STUDENT_ID}&skill=${encodeURIComponent(selectedSkill)}`);
+        const data = await response.json();
+        const modules = data.modules || [];
 
-        const response =
-            await fetch(
-                API +
-                "/api/student/modules?student_id=" +
-                STUDENT_ID +
-                "&skill=" +
-                encodeURIComponent(selectedSkill)
-            );
-
-
-        if (response.ok) {
-
-            const data =
-                await response.json();
-
-
-            const modules =
-                data.modules || [];
-
-
-            if (modules.length > 0) {
-
-                completedModules = modules.map(m => m.completed);
-
-                renderModules(modules);
-
-                return;
-
-            }
-
-        }
-
-        /* Fallback if route fails */
-        const fallbackModules = getFallbackModules(selectedSkill);
-        completedModules = new Array(fallbackModules.length).fill(false);
-        renderModules(fallbackModules);
-
-    } catch (error) {
-
-        const fallbackModules = getFallbackModules(selectedSkill);
-        completedModules = new Array(fallbackModules.length).fill(false);
-        renderModules(fallbackModules);
-
-    }
-
-}
-
-
-/* =========================================================
-   FALLBACK SKILL MODULES
-========================================================= */
-
-function getFallbackModules(skill) {
-
-    const modules = {
-
-        Python: [
-            { module_number: 1, title: "Python Data Structures", description: "Lists, tuples, dictionaries and sets.", completed: false },
-            { module_number: 2, title: "File Handling", description: "Read, write and process files.", completed: false },
-            { module_number: 3, title: "Functions & Exception Handling", description: "Functions, classes and exception handling.", completed: false },
-            { module_number: 4, title: "CRUD Operations", description: "Apply Python concepts through a practical application.", completed: false }
-        ],
-
-        Java: [
-            { module_number: 1, title: "Java OOP Fundamentals", description: "Classes, objects, methods and access modifiers.", completed: false },
-            { module_number: 2, title: "Collections & Exception Handling", description: "Lists, sets, maps and robust error handling.", completed: false },
-            { module_number: 3, title: "Inheritance & Polymorphism", description: "Extending classes, interfaces and abstraction.", completed: false },
-            { module_number: 4, title: "Build a Java Project", description: "Apply Java concepts through a banking application.", completed: false }
-        ],
-
-        "C++": [
-            { module_number: 1, title: "C++ OOP Fundamentals", description: "Variables, control flow, classes and objects.", completed: false },
-            { module_number: 2, title: "Pointers & Memory", description: "Pointer arithmetic, dynamic allocation with new/delete.", completed: false },
-            { module_number: 3, title: "STL & Data Structures", description: "Vectors, maps, sets, algorithms and iterators.", completed: false },
-            { module_number: 4, title: "Build a C++ Project", description: "Apply C++ concepts in a library management system.", completed: false }
-        ],
-
-        SQL: [
-            { module_number: 1, title: "SQL Queries & Filtering", description: "SELECT, WHERE, ORDER BY and aggregate functions.", completed: false },
-            { module_number: 2, title: "Joins & Relationships", description: "INNER, LEFT, RIGHT joins and referential integrity.", completed: false },
-            { module_number: 3, title: "Aggregation & Subqueries", description: "GROUP BY, HAVING clauses and nested subqueries.", completed: false },
-            { module_number: 4, title: "Build a SQL Database Project", description: "Design a relational schema and performance indexes.", completed: false }
-        ]
-
-    };
-
-
-    return modules[skill] || modules.Python;
-
-}
-
-
-/* =========================================================
-   RENDER MODULES
-========================================================= */
-
-function renderModules(modules) {
-
-    const container =
-        document.getElementById(
-            "modules-container"
-        );
-
-
-    container.innerHTML = "";
-
-
-    modules.forEach(
-        (module, index) => {
-
-            const number =
-                module.module_number || (index + 1);
-
-            const isCompleted =
-                module.completed === true;
-
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-
-            card.className =
-                "module-card bg-gray-950 border border-gray-800 rounded-xl p-5";
-
-
+        container.innerHTML = "";
+        modules.forEach(module => {
+            const isCompleted = module.completed === true;
+            const card = document.createElement("div");
+            card.className = "module-card bg-gray-950 border border-gray-800 rounded-xl p-5 flex flex-col justify-between";
             card.innerHTML = `
-
-                <div class="flex justify-between gap-3">
-
-                    <div>
-
-                        <span class="text-xs text-indigo-400 font-bold">
-                            MODULE ${number}
-                        </span>
-
-                        <h4 class="font-bold mt-1">
-                            ${escapeHtml(module.title || ("Module " + number))}
-                        </h4>
-
-                        <p class="text-xs text-gray-500 mt-2">
-                            ${escapeHtml(module.description || "")}
-                        </p>
-
+                <div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-indigo-400 font-bold">REMEDIAL MODULE #${module.module_number}</span>
+                        <span class="text-lg">${isCompleted ? '✓' : '🔒'}</span>
                     </div>
-
-                    <span
-                        id="module-icon-${number}"
-                        class="text-xl">
-                        ${isCompleted ? "✓" : "🔒"}
-                    </span>
-
+                    <h4 class="font-bold mt-1 text-white">${escapeHtml(module.title)}</h4>
+                    <p class="text-xs text-gray-500 mt-2">${escapeHtml(module.description)}</p>
                 </div>
-
-
-                <button
-                    onclick="completeModule(${number})"
-                    id="module-btn-${number}"
-                    ${isCompleted ? "disabled" : ""}
-                    class="w-full mt-4 py-2 ${isCompleted ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-gray-800 hover:bg-gray-700 text-white'} rounded-lg text-xs font-bold transition">
-
-                    ${isCompleted ? "✓ Completed" : "Complete Module"}
-
+                <button onclick="completeModule(${module.module_number})" ${isCompleted ? "disabled" : ""} 
+                        class="w-full mt-4 py-2 ${isCompleted ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-indigo-600 hover:bg-indigo-500 text-white'} rounded-lg text-xs font-bold transition">
+                    ${isCompleted ? "✓ Completed" : `Complete Module ${module.module_number}`}
                 </button>
-
             `;
-
-
-            container.appendChild(
-                card
-            );
-
-        }
-    );
-
-
-    updateLearningProgress();
-
-}
-
-
-/* =========================================================
-   COMPLETE MODULE (Backend Persistent)
-========================================================= */
-
-async function completeModule(moduleNumber) {
-
-    try {
-
-        const response = await fetch(`${API}/api/student/module/${moduleNumber}/complete?student_id=${STUDENT_ID}&skill=${encodeURIComponent(selectedSkill)}`, {
-            method: "POST"
+            container.appendChild(card);
         });
 
-        const data = await response.json();
+        document.getElementById("learning-percent").textContent = `${data.percentage}%`;
+        document.getElementById("learning-bar").style.width = `${data.percentage}%`;
+        document.getElementById("status-learning").textContent = `${data.percentage}% Complete`;
+        if (data.percentage === 100) {
+            document.getElementById("status-learning").className = "text-xs text-emerald-400 mt-2 font-bold";
+        }
+    } catch (error) {
+        console.error("Module load error:", error);
+    }
+}
 
+async function completeModule(moduleNumber) {
+    try {
+        const response = await fetch(`${API}/api/student/module/${moduleNumber}/complete?student_id=${STUDENT_ID}&skill=${encodeURIComponent(selectedSkill)}`, { method: "POST" });
+        const data = await response.json();
         if (!response.ok) {
-            showNotification(data.detail || data.error || "Could not complete module", "error");
+            showNotification(data.detail || "Prerequisite error", "error");
             return;
         }
-
-        showNotification(
-            "Module " +
-            moduleNumber +
-            " completed! Keep going 🚀"
-        );
-
+        showNotification(`Module ${moduleNumber} completed!`);
         await syncStudentState(selectedSkill);
-
     } catch (e) {
-        showNotification("Server error completing module", "error");
+        showNotification("Error completing module", "error");
     }
-
 }
 
+async function syncStudentProjectCard(skill) {
+    const fields = document.getElementById("project-form-fields");
+    const submitBtn = document.getElementById("submit-proj-btn");
+    const resultBox = document.getElementById("project-result");
 
-/* =========================================================
-   LEARNING PROGRESS
-========================================================= */
-
-function updateLearningProgress() {
-
-    const total =
-        completedModules.length;
-
-
-    const completed =
-        completedModules.filter(
-            Boolean
-        ).length;
-
-
-    const percent =
-        total > 0
-            ? Math.round(
-                (completed / total) *
-                100
-            )
-            : 0;
-
-
-    document.getElementById(
-        "learning-percent"
-    ).textContent =
-        percent + "%";
-
-
-    document.getElementById(
-        "learning-bar"
-    ).style.width =
-        percent + "%";
-
-
-    document.getElementById(
-        "status-learning"
-    ).textContent =
-        percent +
-        "% Complete";
-
-
-    if (percent === 100) {
-
-        document.getElementById(
-            "status-learning"
-        ).className =
-            "text-xs text-emerald-400 mt-2 font-bold";
-
-
-        document.getElementById(
-            "motivation-message"
-        ).textContent =
-            "🔥 Amazing! You completed your " +
-            selectedSkill +
-            " learning roadmap. Now showcase your project.";
-
+    if (!projectUnlocked) {
+        fields.classList.add("opacity-50", "pointer-events-none");
+        submitBtn.disabled = true;
+        submitBtn.className = "w-full mt-6 py-3 bg-gray-800 text-gray-500 font-bold rounded-xl text-sm cursor-not-allowed border border-gray-700";
+        submitBtn.textContent = "🔒 Complete Remedial Modules to Unlock Submission";
+        document.getElementById("status-project").textContent = "Locked";
+        document.getElementById("status-project").className = "text-xs text-gray-500 mt-2";
+        resultBox.classList.add("hidden");
+        return;
     }
 
+    fields.classList.remove("opacity-50", "pointer-events-none");
+    submitBtn.disabled = false;
+    submitBtn.className = "w-full mt-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-sm transition";
+    submitBtn.textContent = "Submit Capstone Project for Mentor Review";
+
+    try {
+        const portRes = await fetch(`${API}/api/students/portfolio`);
+        const pData = await portRes.json();
+        const student = (pData.students || []).find(s => s.id === STUDENT_ID);
+        const matching = (student?.projects || []).filter(p => p.skill.toLowerCase() === skill.toLowerCase());
+
+        if (matching.length > 0) {
+            const latest = matching[matching.length - 1];
+            resultBox.classList.remove("hidden");
+            const isVer = latest.status === "Verified";
+
+            document.getElementById("status-project").textContent = isVer ? `Verified • #${latest.id}` : `Submitted • #${latest.id}`;
+            document.getElementById("status-project").className = isVer ? "text-xs text-emerald-400 mt-2 font-bold" : "text-xs text-indigo-400 mt-2 font-bold";
+            document.getElementById("status-verification").textContent = isVer ? "Mentor Verified" : "Pending";
+            document.getElementById("status-verification").className = isVer ? "text-xs text-emerald-400 mt-2 font-bold" : "text-xs text-gray-500 mt-2";
+
+            if (isVer) {
+                document.getElementById("badge-project").classList.remove("opacity-50");
+                document.getElementById("badge-mentor").classList.remove("opacity-50");
+            } else {
+                document.getElementById("badge-project").classList.remove("opacity-50");
+                document.getElementById("badge-mentor").classList.add("opacity-50");
+            }
+
+            resultBox.innerHTML = `
+                <div class="${isVer ? 'bg-emerald-950/40 border-emerald-700' : 'bg-indigo-950/40 border-indigo-700'} border rounded-xl p-5">
+                    <p class="${isVer ? 'text-emerald-400' : 'text-indigo-300'} font-bold text-sm">
+                        ${isVer ? '✓ Project Verified by Faculty Mentor' : '✓ Capstone Project Submitted Successfully'}
+                    </p>
+                    <p class="text-xs text-gray-400 mt-2">Project ID: <span class="text-white font-bold">#${latest.id}</span></p>
+                    <p class="text-xs text-gray-400 mt-1">Status: <span class="${isVer ? 'text-emerald-400' : 'text-amber-400'} font-semibold">${latest.status}</span></p>
+                    ${isVer ? `<p class="text-xs text-gray-400 mt-1">Verified By: <span class="text-white font-semibold">${escapeHtml(latest.verified_by || ACTIVE_MENTOR_NAME)}</span></p>` : ''}
+                </div>
+            `;
+        } else {
+            resultBox.classList.add("hidden");
+            document.getElementById("status-project").textContent = "Ready to Submit";
+            document.getElementById("status-project").className = "text-xs text-indigo-400 mt-2 font-semibold";
+        }
+    } catch (e) {
+        console.error(e);
+    }
 }
-
-
-/* =========================================================
-   PROJECT SUBMISSION
-========================================================= */
 
 async function submitProject() {
+    const title = document.getElementById("proj-title").value.trim();
+    const description = document.getElementById("proj-desc").value.trim();
+    const github = document.getElementById("proj-github").value.trim();
 
-    if (!selectedSkill) {
-
-        showNotification(
-            "Please select a skill first.",
-            "error"
-        );
-
+    if (!title || !description || !github) {
+        showNotification("Please fill in all project fields.", "error");
         return;
-
     }
-
-
-    const title =
-        document.getElementById(
-            "proj-title"
-        ).value.trim();
-
-
-    const description =
-        document.getElementById(
-            "proj-desc"
-        ).value.trim();
-
-
-    const github =
-        document.getElementById(
-            "proj-github"
-        ).value.trim();
-
-
-    if (
-        !title ||
-        !description ||
-        !github
-    ) {
-
-        showNotification(
-            "Please fill in all project fields.",
-            "error"
-        );
-
-        return;
-
-    }
-
 
     try {
-
-        const response =
-            await fetch(
-                API +
-                "/api/student/project",
-                {
-
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-
-                        student_id:
-                            STUDENT_ID,
-
-                        title:
-                            title,
-
-                        description:
-                            description,
-
-                        github_url:
-                            github,
-
-                        skill:
-                            selectedSkill
-
-                    })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            data.error
-        ) {
-
-            throw new Error(
-                data.error ||
-                data.detail ||
-                "Project submission failed"
-            );
-
-        }
-
-
-        showNotification(
-            selectedSkill +
-            " project submitted successfully."
-        );
-
+        const response = await fetch(`${API}/api/student/project`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student_id: STUDENT_ID, title, description, github_url: github, skill: selectedSkill })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Submission failed");
+        showNotification(`${selectedSkill} project submitted for mentor review!`);
         await syncStudentState(selectedSkill);
-
-
     } catch (error) {
-
-        showNotification(
-            error.message ||
-            "Could not submit project.",
-            "error"
-        );
-
+        showNotification(error.message, "error");
     }
-
 }
-
-
-/* =========================================================
-   LOAD MENTOR PROJECT (With Strict Qualification Validation)
-========================================================= */
 
 async function loadMentorProject() {
-
-    const container =
-        document.getElementById(
-            "mentor-project-container"
-        );
-
-
-    container.innerHTML = `
-
-        <div class="text-center py-8">
-
-            <div class="text-3xl animate-pulse">
-                ⏳
-            </div>
-
-            <p class="text-gray-500 text-sm mt-3">
-                Loading project from database...
-            </p>
-
-        </div>
-
-    `;
-
+    const container = document.getElementById("mentor-project-container");
+    container.innerHTML = `<div class="text-center py-8 text-gray-500">Loading project from database...</div>`;
 
     try {
-
-        const response =
-            await fetch(
-                API +
-                "/api/mentor/projects"
-            );
-
-
-        const data =
-            await response.json();
-
-
+        const response = await fetch(`${API}/api/mentor/projects`);
+        const data = await response.json();
         const projects = data.projects || [];
 
-
         if (projects.length === 0) {
-
-            container.innerHTML = `
-
-                <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
-
-                    <div class="text-4xl">
-                        📭
-                    </div>
-
-                    <p class="text-gray-400 mt-3">
-                        No project has been submitted yet.
-                    </p>
-
-                </div>
-
-            `;
-
-
-            await updateMentorQualification(
-                selectedSkill || "Python"
-            );
-
-
+            container.innerHTML = `<div class="text-center border border-dashed border-gray-700 rounded-xl p-10 text-gray-400">📭 No projects waiting in review queue.</div>`;
+            await updateMentorQualification(selectedSkill || "Python");
             return;
-
         }
-
 
         const project = projects[0];
-
         const projectSkill = project.skill || "Python";
-
-
-        /* Update mentor qualification strictly for the submitted project's skill */
         await updateMentorQualification(projectSkill);
 
-
         const verified = project.status === "Verified";
-
-
         container.innerHTML = `
-
             <div class="border border-gray-800 bg-gray-950 rounded-2xl p-6">
-
-                <div class="flex flex-col md:flex-row justify-between gap-4">
-
+                <div class="flex justify-between items-start">
                     <div>
-
-                        <span class="text-xs text-indigo-400 font-bold">
-                            PROJECT #${escapeHtml(project.id)}
-                        </span>
-
-
-                        <h3 class="text-2xl font-black text-white mt-2">
-                            ${escapeHtml(project.title)}
-                        </h3>
-
-
-                        <p class="text-sm text-gray-400 mt-2">
-
-                            Submitted by:
-                            <span class="text-white font-semibold">
-                                ${escapeHtml(project.student_name || "Ananya Rao")}
-                            </span>
-
-                            • Student #${escapeHtml(project.student_id)}
-
-                        </p>
-
+                        <span class="text-xs text-indigo-400 font-bold">PROJECT #${project.id}</span>
+                        <h3 class="text-2xl font-black text-white mt-1">${escapeHtml(project.title)}</h3>
+                        <p class="text-sm text-gray-400 mt-1">Submitted by: <strong class="text-white">${escapeHtml(project.student_name)}</strong> • Student #${project.student_id}</p>
                     </div>
-
-
-                    <div>
-
-                        ${
-                            verified
-                            ? `
-                                <span class="px-3 py-2 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold">
-                                    ✓ Mentor Verified
-                                </span>
-                            `
-                            : `
-                                <span class="px-3 py-2 rounded-full bg-amber-500/10 border border-amber-700 text-amber-400 text-xs font-bold">
-                                    Pending Verification
-                                </span>
-                            `
-                        }
-
+                    <span class="px-3 py-1 rounded-full text-xs font-bold ${verified ? 'bg-emerald-500/10 border border-emerald-700 text-emerald-400' : 'bg-amber-500/10 border border-amber-700 text-amber-400'}">
+                        ${verified ? '✓ Verified' : 'Pending Verification'}
+                    </span>
+                </div>
+                <div class="mt-4 bg-gray-900 border border-gray-800 rounded-xl p-4 text-xs">
+                    <p class="text-gray-400 uppercase font-bold">Description</p>
+                    <p class="text-gray-300 mt-1">${escapeHtml(project.description)}</p>
+                    <a href="${escapeHtml(project.repo)}" target="_blank" class="inline-block mt-3 text-indigo-400 hover:underline">🔗 View GitHub Repository</a>
+                </div>
+                <div class="mt-4 grid grid-cols-3 gap-3 text-xs">
+                    <div class="bg-gray-900 p-3 rounded-lg"><span class="text-gray-500">Skill Domain:</span> <strong class="text-indigo-400">${escapeHtml(projectSkill)}</strong></div>
+                    <div class="bg-gray-900 p-3 rounded-lg"><span class="text-gray-500">Mentor Status:</span> <strong class="${mentorQualified ? 'text-emerald-400' : 'text-red-400'}">${mentorQualified ? '✓ Qualified' : '✕ Unqualified'}</strong></div>
+                    <div class="bg-gray-900 p-3 rounded-lg"><span class="text-gray-500">DB Status:</span> <strong class="${verified ? 'text-emerald-400' : 'text-amber-400'}">${project.status}</strong></div>
+                </div>
+                ${!verified ? `
+                    <button onclick="approveProject(${project.id}, '${escapeJs(projectSkill)}')" ${!mentorQualified ? "disabled" : ""}
+                            class="w-full mt-5 py-3 ${mentorQualified ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer' : 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'} rounded-xl font-bold transition">
+                        ${mentorQualified ? `✓ Approve & Verify ${escapeHtml(projectSkill)} Project` : `✕ Cannot Approve (Unqualified for ${escapeHtml(projectSkill)})`}
+                    </button>
+                ` : `
+                    <div class="mt-5 p-3 bg-emerald-950/30 border border-emerald-800 rounded-xl text-center text-xs text-emerald-400 font-bold">
+                        ✓ Verified by ${escapeHtml(project.verified_by || ACTIVE_MENTOR_NAME)}. Student now holds authenticated ${escapeHtml(projectSkill)} certification.
                     </div>
-
-                </div>
-
-
-                <div class="mt-6 bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                    <p class="text-xs text-gray-500 uppercase font-bold">
-                        Skill
-                    </p>
-
-                    <p class="text-lg font-bold text-indigo-400 mt-2">
-                        ${escapeHtml(projectSkill)}
-                    </p>
-
-                </div>
-
-
-                <div class="mt-4 bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                    <p class="text-xs text-gray-500 uppercase font-bold">
-                        Project Description
-                    </p>
-
-                    <p class="text-sm text-gray-300 mt-2">
-                        ${escapeHtml(project.description)}
-                    </p>
-
-                </div>
-
-
-                <div class="mt-4 bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                    <p class="text-xs text-gray-500 uppercase font-bold">
-                        GitHub Evidence
-                    </p>
-
-
-                    <a
-                        href="${escapeHtml(project.repo)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-sm text-indigo-400 hover:underline break-all block mt-2">
-
-                        ${escapeHtml(project.repo)}
-
-                    </a>
-
-                </div>
-
-
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-
-
-                    <div class="bg-gray-900 rounded-xl p-4">
-
-                        <p class="text-xs text-gray-500">
-                            Student
-                        </p>
-
-                        <p class="font-bold mt-1">
-                            ${escapeHtml(project.student_name || "Ananya Rao")}
-                        </p>
-
-                    </div>
-
-
-                    <div class="bg-gray-900 rounded-xl p-4">
-
-                        <p class="text-xs text-gray-500">
-                            Skill
-                        </p>
-
-                        <p class="font-bold text-indigo-400 mt-1">
-                            ${escapeHtml(projectSkill)}
-                        </p>
-
-                    </div>
-
-
-                    <div class="bg-gray-900 rounded-xl p-4">
-
-                        <p class="text-xs text-gray-500">
-                            Status
-                        </p>
-
-                        <p class="font-bold mt-1 ${
-                            verified ? "text-emerald-400" : "text-amber-400"
-                        }">
-
-                            ${verified ? "Verified" : "Pending"}
-
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                ${
-                    !verified
-                    ? `
-                        <button
-                            onclick="approveProject(${project.id}, '${escapeJs(projectSkill)}')"
-                            id="approve-project-btn"
-                            ${!mentorQualified ? "disabled" : ""}
-                            class="w-full mt-6 py-3 ${mentorQualified ? 'bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer' : 'bg-gray-800 text-gray-500 cursor-not-allowed border border-gray-700'} rounded-xl font-bold transition">
-
-                            ${mentorQualified ? `✓ Approve & Verify ${escapeHtml(projectSkill)} Project` : `✕ Cannot Approve (Unqualified for ${escapeHtml(projectSkill)})`}
-
-                        </button>
-                    `
-                    : `
-                        <div class="mt-6 p-4 bg-emerald-950/30 border border-emerald-800 rounded-xl text-center">
-
-                            <p class="text-emerald-400 font-bold">
-
-                                ✓ Project verified by
-                                ${escapeHtml(
-                                    project.verified_by || ACTIVE_MENTOR_NAME
-                                )}
-
-                            </p>
-
-
-                            <p class="text-xs text-gray-500 mt-1">
-
-                                ${escapeHtml(projectSkill)}
-                                is now a verified skill for this student.
-
-                            </p>
-
-                        </div>
-                    `
-                }
-
+                `}
             </div>
-
         `;
-
-
-    } catch (error) {
-
-        container.innerHTML = `
-
-            <div class="text-center text-red-400 py-8">
-                Unable to load mentor data from backend.
-            </div>
-
-        `;
-
+    } catch (e) {
+        container.innerHTML = `<div class="text-center text-red-400 py-8">Failed to fetch review queue.</div>`;
     }
-
 }
-
-
-/* =========================================================
-   MENTOR QUALIFICATION (Strict Fail-Safe)
-========================================================= */
 
 async function updateMentorQualification(skill) {
-
-    document.getElementById(
-        "mentor-current-skill"
-    ).textContent =
-        skill;
-
-
-    document.getElementById(
-        "mentor-qualification-badge"
-    ).textContent =
-        "Checking qualification...";
-
-
-    document.getElementById(
-        "mentor-qualification-text"
-    ).textContent =
-        "Checking...";
-
-
+    document.getElementById("mentor-current-skill").textContent = skill;
     try {
-
-        const response =
-            await fetch(
-                API +
-                "/api/mentor/qualification?mentor_name=" +
-                encodeURIComponent(ACTIVE_MENTOR_NAME) +
-                "&skill=" +
-                encodeURIComponent(skill)
-            );
-
-
-        if (response.ok) {
-
-            const data =
-                await response.json();
-
-
-            mentorQualified = data.qualified === true;
-
-
-        } else {
-
-            /* Fail safely: do NOT auto-qualify on error */
-            mentorQualified = false;
-
-        }
-
-
-    } catch (error) {
-
-        /* Fail safely: do NOT auto-qualify on network error */
+        const res = await fetch(`${API}/api/mentor/qualification?mentor_name=${encodeURIComponent(ACTIVE_MENTOR_NAME)}&skill=${encodeURIComponent(skill)}`);
+        const data = await res.json();
+        mentorQualified = data.qualified === true;
+    } catch {
         mentorQualified = false;
-
     }
 
-
+    const badge = document.getElementById("mentor-qualification-badge");
+    const text = document.getElementById("mentor-qualification-text");
     if (mentorQualified) {
-
-        document.getElementById(
-            "mentor-qualification-badge"
-        ).textContent =
-            "✓ Qualified Mentor";
-
-
-        document.getElementById(
-            "mentor-qualification-badge"
-        ).className =
-            "px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold";
-
-
-        document.getElementById(
-            "mentor-qualification-text"
-        ).textContent =
-            "Qualified for " +
-            skill;
-
-
-        document.getElementById(
-            "mentor-qualification-text"
-        ).className =
-            "font-bold text-emerald-400 mt-1";
-
-
+        badge.textContent = "✓ Qualified Mentor";
+        badge.className = "px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold";
+        text.textContent = `Qualified for ${skill}`;
+        text.className = "font-bold text-emerald-400 mt-1";
     } else {
-
-        document.getElementById(
-            "mentor-qualification-badge"
-        ).textContent =
-            "✕ Not Qualified";
-
-
-        document.getElementById(
-            "mentor-qualification-badge"
-        ).className =
-            "px-4 py-2 rounded-full bg-red-500/10 border border-red-700 text-red-400 text-xs font-bold";
-
-
-        document.getElementById(
-            "mentor-qualification-text"
-        ).textContent =
-            "Not qualified for " +
-            skill;
-
-
-        document.getElementById(
-            "mentor-qualification-text"
-        ).className =
-            "font-bold text-red-400 mt-1";
-
+        badge.textContent = "✕ Not Qualified";
+        badge.className = "px-4 py-2 rounded-full bg-red-500/10 border border-red-700 text-red-400 text-xs font-bold";
+        text.textContent = `Not qualified for ${skill}`;
+        text.className = "font-bold text-red-400 mt-1";
     }
-
 }
 
-
-/* =========================================================
-   MENTOR APPROVAL
-========================================================= */
-
-async function approveProject(
-    projectId,
-    skill
-) {
-
-    if (!mentorQualified) {
-
-        showNotification(
-            "This mentor is not qualified to verify " +
-            skill +
-            ".",
-            "error"
-        );
-
-        return;
-
-    }
-
-
+async function approveProject(projectId, skill) {
+    if (!mentorQualified) return;
     try {
-
-        const response =
-            await fetch(
-                API +
-                "/api/mentor/approve/" +
-                projectId +
-                "?mentor_name=" +
-                encodeURIComponent(ACTIVE_MENTOR_NAME),
-                {
-                    method: "POST"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (
-            !response.ok ||
-            data.error ||
-            data.detail
-        ) {
-
-            throw new Error(
-                data.detail ||
-                data.error ||
-                "Approval failed"
-            );
-
-        }
-
-
-        showNotification(
-            skill +
-            " project verified successfully!"
-        );
-
-
-        /* Refresh both mentor feed and student underlying state */
+        const res = await fetch(`${API}/api/mentor/approve/${projectId}?mentor_name=${encodeURIComponent(ACTIVE_MENTOR_NAME)}`, { method: "POST" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || "Approval failed");
+        showNotification(`${skill} project verified successfully!`);
         await loadMentorProject();
-
-        if (selectedSkill) {
-            await syncStudentState(selectedSkill);
-        }
-
-
-    } catch (error) {
-
-        showNotification(
-            error.message ||
-            "Could not approve project.",
-            "error"
-        );
-
+        if (selectedSkill) await syncStudentState(selectedSkill);
+    } catch (err) {
+        showNotification(err.message, "error");
     }
-
 }
-
-
-/* =========================================================
-   STRIKE SYSTEM (Persistent with Server Audit)
-========================================================= */
 
 async function fetchStudentStrikes() {
-
     try {
-
-        const response = await fetch(`${API}/api/student/strikes?student_id=${STUDENT_ID}`);
-
-        if (response.ok) {
-
-            const data = await response.json();
-
-            strikeCount = data.strike_count || 0;
-
-            updateStrikeUI(strikeCount, data.status);
-
-        }
-
+        const res = await fetch(`${API}/api/student/strikes?student_id=${STUDENT_ID}`);
+        const data = await res.json();
+        strikeCount = data.strike_count || 0;
+        updateStrikeUI(strikeCount, data.status);
     } catch (e) {
-        console.error("Failed to load strikes:", e);
+        console.error(e);
     }
-
 }
-
 
 async function addStrike() {
-
     if (strikeCount >= 3) {
-
-        showNotification(
-            "Student already has 3 strikes. Maximum limit reached. Administrative Review Required.",
-            "error"
-        );
-
+        showNotification("Maximum 3 strikes reached. Administrative review required.", "error");
         return;
-
     }
-
-
-    const confirmAction = confirm(
-        "⚠️ Are you sure you want to flag this project and issue an academic integrity strike to Ananya Rao?"
-    );
-
-    if (!confirmAction) return;
-
+    if (!confirm("⚠️ Issue an integrity strike against this student record?")) return;
 
     try {
-
-        const res = await fetch(
-            API + "/api/mentor/strike",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    student_id: STUDENT_ID,
-                    mentor_name: ACTIVE_MENTOR_NAME,
-                    skill: selectedSkill || "General",
-                    reason: "Invalid / Plagiarized project evidence"
-                })
-            }
-        );
-
+        const res = await fetch(`${API}/api/mentor/strike`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ student_id: STUDENT_ID, mentor_name: ACTIVE_MENTOR_NAME, skill: selectedSkill || "General", reason: "Plagiarized project evidence" })
+        });
         const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.detail || "Failed to issue strike");
-        }
-
+        if (!res.ok) throw new Error(data.detail);
         strikeCount = data.strike_count;
-
         updateStrikeUI(strikeCount, data.trust_status);
-
-        showNotification(
-            `Strike added. Current count: ${strikeCount} (${data.trust_status})`,
-            "error"
-        );
-
-    } catch (error) {
-
-        showNotification(
-            error.message || "Could not record strike on backend.",
-            "error"
-        );
-
+        showNotification(`Strike issued. Total: ${strikeCount} (${data.trust_status})`, "error");
+    } catch (e) {
+        showNotification(e.message, "error");
     }
-
 }
 
-
-function updateStrikeUI(count = strikeCount, statusName = null) {
-
-    document.getElementById(
-        "mentor-strike-count"
-    ).textContent =
-        count;
-
-
-    const strikeBtn = document.getElementById("mentor-strike-btn");
-
+function updateStrikeUI(count = strikeCount, statusName = "Good Standing") {
+    document.getElementById("mentor-strike-count").textContent = count;
+    const btn = document.getElementById("mentor-strike-btn");
+    const mStatus = document.getElementById("mentor-trust-status");
+    const sStatus = document.getElementById("strike-status");
 
     if (count === 0) {
-
-        document.getElementById("mentor-trust-status").textContent = "Good Standing";
-        document.getElementById("mentor-trust-status").className = "font-bold text-emerald-400 mt-1";
-
-        document.getElementById("strike-status").textContent = "0 Strikes • Good Standing";
-        document.getElementById("strike-status").className = "text-xs text-emerald-400 mt-1";
-
-        if (strikeBtn) {
-            strikeBtn.disabled = false;
-            strikeBtn.classList.remove("opacity-50", "cursor-not-allowed");
-        }
-
+        mStatus.textContent = "Good Standing"; mStatus.className = "font-bold text-emerald-400 mt-1";
+        sStatus.textContent = "0 Strikes • Good Standing"; sStatus.className = "text-xs text-emerald-400 mt-1";
+        btn.disabled = false; btn.classList.remove("opacity-50", "cursor-not-allowed");
     } else if (count < 3) {
-
-        document.getElementById("mentor-trust-status").textContent = "Warning";
-        document.getElementById("mentor-trust-status").className = "font-bold text-amber-400 mt-1";
-
-        document.getElementById("strike-status").textContent = count + " Strike(s) • Warning";
-        document.getElementById("strike-status").className = "text-xs text-amber-400 mt-1";
-
-        if (strikeBtn) {
-            strikeBtn.disabled = false;
-            strikeBtn.classList.remove("opacity-50", "cursor-not-allowed");
-        }
-
+        mStatus.textContent = "Warning"; mStatus.className = "font-bold text-amber-400 mt-1";
+        sStatus.textContent = `${count} Strike(s) • Warning`; sStatus.className = "text-xs text-amber-400 mt-1";
+        btn.disabled = false; btn.classList.remove("opacity-50", "cursor-not-allowed");
     } else {
-
-        document.getElementById("mentor-trust-status").textContent = "Review Required";
-        document.getElementById("mentor-trust-status").className = "font-bold text-red-400 mt-1";
-
-        document.getElementById("strike-status").textContent = "3 Strikes • Review Required";
-        document.getElementById("strike-status").className = "text-xs text-red-400 mt-1";
-
-        if (strikeBtn) {
-            strikeBtn.disabled = true;
-            strikeBtn.classList.add("opacity-50", "cursor-not-allowed");
-        }
-
+        mStatus.textContent = "Review Required"; mStatus.className = "font-bold text-red-400 mt-1";
+        sStatus.textContent = "3 Strikes • Review Required"; sStatus.className = "text-xs text-red-400 mt-1";
+        btn.disabled = true; btn.classList.add("opacity-50", "cursor-not-allowed");
     }
-
 }
-
-
-/* =========================================================
-   RECRUITER SEARCH (Only Genuine Verified Skills)
-========================================================= */
 
 async function searchCandidates() {
-
-    const skill =
-        document.getElementById(
-            "skill-search-input"
-        ).value.trim();
-
-
-    if (!skill) {
-
-        showNotification(
-            "Enter a skill to search.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    const container =
-        document.getElementById(
-            "recruiter-results"
-        );
-
-
-    container.innerHTML = `
-
-        <div class="text-center py-8">
-
-            <div class="text-3xl animate-pulse">
-                🔎
-            </div>
-
-            <p class="text-gray-500 text-sm mt-3">
-                Searching verified candidates...
-            </p>
-
-        </div>
-
-    `;
-
+    const skill = document.getElementById("skill-search-input").value.trim();
+    if (!skill) return;
+    const container = document.getElementById("recruiter-results");
+    container.innerHTML = `<div class="text-center py-8 text-gray-500">Searching authenticated records...</div>`;
 
     try {
+        const res = await fetch(`${API}/api/recruiter/search?skill=${encodeURIComponent(skill)}`);
+        const data = await res.json();
+        const students = data.students || [];
 
-        const response =
-            await fetch(
-                API +
-                "/api/recruiter/search?skill=" +
-                encodeURIComponent(skill)
-            );
-
-
-        const data =
-            await response.json();
-
-
-        const students =
-            data.students || [];
-
-
-        if (
-            students.length === 0
-        ) {
-
-            container.innerHTML = `
-
-                <div class="text-center border border-dashed border-gray-700 rounded-xl p-10">
-
-                    <div class="text-4xl">
-                        🔍
-                    </div>
-
-                    <p class="text-gray-400 mt-3">
-                        No verified candidates found for "${escapeHtml(skill)}".
-                    </p>
-
-                    <p class="text-xs text-gray-600 mt-2">
-                        Try Python, Java, C++ or SQL.
-                    </p>
-
-                </div>
-
-            `;
-
-
+        if (students.length === 0) {
+            container.innerHTML = `<div class="text-center border border-dashed border-gray-700 rounded-xl p-10 text-gray-400">🔍 No verified candidates found for "${escapeHtml(skill)}".</div>`;
             return;
-
         }
 
-
         container.innerHTML = `
-
-            <div class="mb-5 p-4 bg-purple-950/30 border border-purple-800 rounded-xl">
-
-                <p class="text-sm text-purple-300 font-semibold">
-                    ✓ ${students.length}
-                    verified candidate(s) found for
-                    ${escapeHtml(skill)}
-                </p>
-
-
-                <p class="text-xs text-gray-500 mt-1">
-                    Results contain only genuine, mentor-verified skills.
-                </p>
-
-            </div>
-
-
-            <div class="grid grid-cols-1 gap-5">
-
-                ${students.map(
-                    student => {
-
-                        const verifiedProjects =
-                            student.projects ||
-                            [];
-
-
-                        return `
-
-                            <div class="bg-gray-950 border border-gray-800 rounded-2xl p-6">
-
-                                <div class="flex flex-col md:flex-row justify-between gap-5">
-
-                                    <div>
-
-                                        <p class="text-xs text-gray-500">
-                                            CANDIDATE
-                                        </p>
-
-
-                                        <h3 class="text-xl font-black mt-1">
-                                            ${escapeHtml(student.name)}
-                                        </h3>
-
-
-                                        <p class="text-xs text-gray-500 mt-1">
-                                            Student #${escapeHtml(student.id)}
-                                        </p>
-
-
-                                        <p class="text-xs text-gray-500 mt-1">
-                                            ${escapeHtml(student.college || "")}
-                                        </p>
-
-                                    </div>
-
-
-                                    <div class="text-left md:text-right">
-
-                                        <span class="inline-flex px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold">
-                                            ✓ Verified Skill
-                                        </span>
-
-
-                                        <p class="text-indigo-400 font-bold mt-2">
-                                            ${escapeHtml(
-                                                (
-                                                    student.verified_skills ||
-                                                    []
-                                                ).join(", ")
-                                            )}
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="mt-6">
-
-                                    <p class="text-xs text-gray-500 uppercase font-bold">
-                                        Proof of Skill
-                                    </p>
-
-
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-
-
-                                        <div class="bg-gray-900 rounded-xl p-4">
-
-                                            <p class="text-xs text-gray-500">
-                                                Assessment
-                                            </p>
-
-
-                                            <p class="text-sm font-bold text-emerald-400 mt-1">
-                                                ✓ Completed
-                                            </p>
-
-                                        </div>
-
-
-                                        <div class="bg-gray-900 rounded-xl p-4">
-
-                                            <p class="text-xs text-gray-500">
-                                                Project
-                                            </p>
-
-
-                                            <p class="text-sm font-bold text-emerald-400 mt-1">
-                                                ✓ Mentor Verified
-                                            </p>
-
-                                        </div>
-
-
-                                        <div class="bg-gray-900 rounded-xl p-4">
-
-                                            <p class="text-xs text-gray-500">
-                                                Verification
-                                            </p>
-
-
-                                            <p class="text-sm font-bold text-emerald-400 mt-1">
-                                                ✓ Faculty Endorsed
-                                            </p>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
-                                ${
-                                    verifiedProjects.length > 0
-                                    ?
-                                    verifiedProjects.map(
-                                        project => `
-
-                                            <div class="mt-5 bg-gray-900 border border-gray-800 rounded-xl p-5">
-
-                                                <p class="text-xs text-gray-500">
-                                                    VERIFIED PROJECT
-                                                </p>
-
-
-                                                <h4 class="font-bold mt-1">
-                                                    ${escapeHtml(project.title)}
-                                                </h4>
-
-
-                                                <p class="text-xs text-gray-400 mt-2">
-                                                    ${escapeHtml(project.description)}
-                                                </p>
-
-
-                                                <p class="text-xs text-indigo-400 mt-2 font-semibold">
-                                                    Skill:
-                                                    ${escapeHtml(project.skill || skill)}
-                                                </p>
-
-
-                                                <a
-                                                    href="${escapeHtml(project.repo)}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    class="inline-block mt-3 text-xs text-indigo-400 hover:underline">
-
-                                                    🔗 View GitHub Evidence
-
-                                                </a>
-
-                                            </div>
-
-                                        `
-                                    ).join("")
-                                    :
-                                    ""
-                                }
-
+            <div class="mb-4 text-xs font-bold text-purple-400">✓ ${students.length} verified candidate(s) authenticated for ${escapeHtml(skill)}</div>
+            <div class="space-y-4">
+                ${students.map(s => `
+                    <div class="bg-gray-950 border border-gray-800 rounded-2xl p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-black text-white">${escapeHtml(s.name)}</h3>
+                                <p class="text-xs text-gray-500">${escapeHtml(s.college)} • Student #${s.id}</p>
                             </div>
-
-                        `;
-
-                    }
-                ).join("")}
-
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-700 text-emerald-400 text-xs font-bold">✓ Verified Candidate</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-4 text-xs">
+                            <div class="bg-gray-900 p-2.5 rounded border border-gray-800"><span class="text-gray-500 block">Assessment:</span> <strong class="text-emerald-400">✓ Completed</strong></div>
+                            <div class="bg-gray-900 p-2.5 rounded border border-gray-800"><span class="text-gray-500 block">Gap Remediation:</span> <strong class="text-emerald-400">✓ Verified Complete</strong></div>
+                            <div class="bg-gray-900 p-2.5 rounded border border-gray-800"><span class="text-gray-500 block">Faculty Review:</span> <strong class="text-emerald-400">✓ Endorsed</strong></div>
+                        </div>
+                    </div>
+                `).join("")}
             </div>
-
         `;
-
-
-    } catch (error) {
-
-        container.innerHTML = `
-
-            <div class="text-center text-red-400 py-8">
-                Unable to search candidates. Make sure FastAPI server is running.
-            </div>
-
-        `;
-
+    } catch {
+        container.innerHTML = `<div class="text-center text-red-400 py-8">Recruiter query failed.</div>`;
     }
-
 }
 
-
-/* =========================================================
-   UPDATE JOURNEY READINESS FROM BACKEND DATA
-========================================================= */
-
 function updateJourneyFromData(readiness) {
-
     const score = Number(readiness) || 0;
-
     document.getElementById("hero-readiness").textContent = score + "%";
     document.getElementById("readiness-number").textContent = score + "%";
     document.getElementById("readiness-bar").style.width = score + "%";
 
     if (score === 100) {
-
         document.getElementById("readiness-text").textContent = "Congratulations! You are Industry Ready.";
-
-        document.getElementById("motivation-message").textContent =
-            "🎯 You did it! Your complete " +
-            (selectedSkill || "Python") +
-            " skill journey is verified and ready to showcase.";
-
+        document.getElementById("motivation-message").textContent = `🎯 100% Industry Ready! Complete skill journey authenticated.`;
         document.getElementById("badge-job").classList.remove("opacity-50");
-
     } else {
-
-        document.getElementById("readiness-text").textContent =
-            "Complete assessment, skill-gap learning, project and mentor verification.";
-
+        document.getElementById("readiness-text").textContent = "Complete diagnostic quiz, remedial modules, and project verification.";
         document.getElementById("badge-job").classList.add("opacity-50");
-
     }
-
 }
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
 
 function escapeHtml(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
+    return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
-
-
-/* =========================================================
-   ESCAPE JAVASCRIPT
-========================================================= */
 
 function escapeJs(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(/\\/g, "\\\\")
-    .replace(/'/g, "\\'");
-
+    return String(value ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 }
-
-
-/* =========================================================
-   INITIAL APP BOOTSTRAP
-========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchStudentStrikes();
     selectSkill("Python");
 });
-
 </script>
 
 </body>
